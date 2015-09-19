@@ -1,0 +1,38 @@
+{
+  "name": "OatmealFramework",
+  "version": "0.1.0",
+  "summary": "Oatmeal is a refreshing Swift Framework to make bootstrapping your apps much easier.",
+  "description": "Oatmeal is a refreshing Swift Framework to make bootstrapping your apps much easier. Mmmkay?",
+  "homepage": "https://github.com/mikenolimits/OatmealFramework",
+  "license": "MIT",
+  "authors": {
+    "mikenolimits": "empathynyc@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/mikenolimits/Oatmeal.git",
+    "tag": "0.1.0"
+  },
+  "social_media_url": "https://twitter.com/mikenolimits",
+  "requires_arc": true,
+  "source_files": "Pod/Classes/**/*",
+  "resource_bundles": {
+    "Oatmeal": [
+      "Pod/Assets/*.png"
+    ]
+  },
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.9"
+  },
+  "dependencies": {
+    "SwiftyJSON": [
+
+    ],
+    "Alamofire": [
+      "~> 2.0"
+    ],
+    "AlamofireImage": [
+      "~> 1.0.0"
+    ]
+  }
+}

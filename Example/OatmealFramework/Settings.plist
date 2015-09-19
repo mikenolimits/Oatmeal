@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LOG_LOCATION</key>
+	<string>/Users/michaelkantor/AppcodProjects/OatmealFramework/Example/OatmealFramework/App.txt</string>
+	<key>LOG_HTTP</key>
+	<true/>
+</dict>
+</plist>
