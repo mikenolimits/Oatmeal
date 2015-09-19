@@ -7,7 +7,6 @@
 //
 
 import Foundation
-<<<<<<< HEAD
 
 
 public struct NullElement{
@@ -21,5 +20,3 @@ public struct NullElement{
         self.error       = error
     }
 }
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e

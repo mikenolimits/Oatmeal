@@ -1,5 +1,4 @@
 import Foundation
-import Async
 /*
     Implements default functionality for any object using the protocol Modelable
 

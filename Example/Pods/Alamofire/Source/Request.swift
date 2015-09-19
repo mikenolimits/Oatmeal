@@ -193,11 +193,7 @@ public class Request {
         let progress: NSProgress
 
         var data: NSData? { return nil }
-<<<<<<< HEAD
         var error: ErrorType?
-=======
-        var error: NSError?
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
         var credential: NSURLCredential?
 
@@ -448,11 +444,7 @@ extension Request: CustomStringConvertible {
             components.append("(\(response.statusCode))")
         }
 
-<<<<<<< HEAD
         return components.joinWithSeparator(" ")
-=======
-        return " ".join(components)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     }
 }
 
@@ -481,11 +473,7 @@ extension Request: CustomDebugStringConvertible {
                 authenticationMethod: NSURLAuthenticationMethodHTTPBasic
             )
 
-<<<<<<< HEAD
             if let credentials = credentialStorage.credentialsForProtectionSpace(protectionSpace)?.values {
-=======
-            if let credentials = credentialStorage.credentialsForProtectionSpace(protectionSpace)?.values.array {
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
                 for credential in credentials {
                     components.append("-u \(credential.user!):\(credential.password!)")
                 }
@@ -538,11 +526,7 @@ extension Request: CustomDebugStringConvertible {
 
         components.append("\"\(URL!.absoluteString)\"")
 
-<<<<<<< HEAD
         return components.joinWithSeparator(" \\\n\t")
-=======
-        return " \\\n\t".join(components)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     }
 
     /// The textual representation used when written to an output stream, in the form of a cURL command.

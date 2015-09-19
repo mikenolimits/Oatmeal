@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Async
 
 public class Model : SerializebleObject,Modelable{
     
@@ -134,11 +133,13 @@ public class Model : SerializebleObject,Modelable{
         {
             if(reachability.isConnected())
             {
+                /*
                 Async.background(after: 400.0)
                 {
                     self.find("\(self.id)")
                     self.reloadModel()
                 }
+                */
             }
         }
         else

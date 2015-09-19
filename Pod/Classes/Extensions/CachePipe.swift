@@ -7,11 +7,8 @@
 //
 
 import Foundation
-<<<<<<< HEAD
 /*
-=======
 
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 extension Cache : Pipeable{
     
     var name : String{
@@ -34,10 +31,6 @@ extension Cache : Pipeable{
     func isPipeReadyForMiddleware()->Bool{
         return true
     }
-<<<<<<< HEAD
 }
 */
-=======
-    
-}
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
+

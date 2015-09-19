@@ -58,11 +58,7 @@ public class Manager {
                 }
             }
 
-<<<<<<< HEAD
             return components.joinWithSeparator(",")
-=======
-            return ",".join(components)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         }()
 
         // User-Agent Header; see https://tools.ietf.org/html/rfc7231#section-5.5.3
@@ -136,14 +132,8 @@ public class Manager {
         self.session.serverTrustPolicyManager = serverTrustPolicyManager
 
         self.delegate.sessionDidFinishEventsForBackgroundURLSession = { [weak self] session in
-<<<<<<< HEAD
             guard let strongSelf = self else { return }
             dispatch_async(dispatch_get_main_queue()) { strongSelf.backgroundCompletionHandler?() }
-=======
-            if let strongSelf = self {
-                strongSelf.backgroundCompletionHandler?()
-            }
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         }
     }
 
@@ -154,11 +144,7 @@ public class Manager {
     // MARK: - Request
 
     /**
-<<<<<<< HEAD
         Creates a request for the specified method, URL string, parameters, parameter encoding and headers.
-=======
-        Creates a request for the specified method, URL string, parameters, and parameter encoding.
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
         - parameter method:     The HTTP method.
         - parameter URLString:  The URL string.
@@ -659,7 +645,6 @@ public class Manager {
         var _streamTaskWriteClosed: Any?
         var _streamTaskBetterRouteDiscovered: Any?
         var _streamTaskDidBecomeInputStream: Any?
-<<<<<<< HEAD
 
         // MARK: - NSObject
 
@@ -679,7 +664,5 @@ public class Manager {
                 return self.dynamicType.instancesRespondToSelector(selector)
             }
         }
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     }
 }

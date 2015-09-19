@@ -1,22 +1,23 @@
 PODS:
-<<<<<<< HEAD
   - Alamofire (2.0.1)
   - AlamofireImage (1.0.0):
     - Alamofire (~> 2.0)
-  - OatmealFramework (0.1.0):
-    - Alamofire (~> 2.0)
-    - AlamofireImage (~> 1.0.0)
+  - Async (0.2.0)
+  - Oatmeal (0.1.0):
+    - Alamofire
+    - AlamofireImage
+    - Async
     - SwiftyJSON
   - SwiftyJSON (2.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 2.0)
   - AlamofireImage (~> 1.0)
-  - OatmealFramework (from `../`)
+  - Oatmeal (from `../`)
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
 
 EXTERNAL SOURCES:
-  OatmealFramework:
+  Oatmeal:
     :path: "../"
   SwiftyJSON:
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
@@ -29,54 +30,8 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 1d8e208d616fbbfd2391b15eae766d07c96cdc49
   AlamofireImage: 0d181ae145f879ee2ebd204074eacbc659276ab3
-  OatmealFramework: 9334ad1fe8a72c6cf1d87b4139af3af5234588e6
+  Async: d80205f1a1b4eea24de8ddc62cf5197ff3025330
+  Oatmeal: 224d200830ef4488d9f06df7eaa452500cf42416
   SwiftyJSON: 8d6b61a70277ef2a5d710d372e06e7e2d87fb9e4
 
 COCOAPODS: 0.39.0.beta.4
-=======
-  - Alamofire (2.0.0-beta.1)
-  - Async (1.3.1)
-  - Oatmeal (0.1.0):
-    - Alamofire (~> 2.0.0-beta.1)
-    - Async
-    - SwiftyJSON
-  - SwiftyJSON (2.2.1)
-
-DEPENDENCIES:
-  - Alamofire (from `https://github.com/Alamofire/Alamofire.git`, branch `swift-2.0`)
-  - Async (from `https://github.com/duemunk/Async.git`, branch `feature/Swift_2.0`)
-  - Oatmeal (from `../`)
-  - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`, branch `xcode7`)
-
-EXTERNAL SOURCES:
-  Alamofire:
-    :branch: swift-2.0
-    :git: https://github.com/Alamofire/Alamofire.git
-  Async:
-    :branch: feature/Swift_2.0
-    :git: https://github.com/duemunk/Async.git
-  Oatmeal:
-    :path: ../
-  SwiftyJSON:
-    :branch: xcode7
-    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
-
-CHECKOUT OPTIONS:
-  Alamofire:
-    :commit: e489c5fece971352b05b6ef185eca53f68bee1bc
-    :git: https://github.com/Alamofire/Alamofire.git
-  Async:
-    :commit: abe23c18d8d3a708a325b5db10231388e1ca5b88
-    :git: https://github.com/duemunk/Async.git
-  SwiftyJSON:
-    :commit: f269523ac572979245baa99c8475eab73caf1e9b
-    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
-
-SPEC CHECKSUMS:
-  Alamofire: 96feccc1e48a735edb92395cf023ba4ed52bdb45
-  Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
-  Oatmeal: 6ed9e3e374d86ff24d046c65f6b7176f44ea1fbf
-  SwiftyJSON: ae2d0a3d68025d136602a33c4ee215091ced3e33
-
-COCOAPODS: 0.38.2
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e

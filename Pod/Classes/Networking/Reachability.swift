@@ -17,30 +17,21 @@ public class Reachability : Resolveable {
             print("There is Internet : \(connected)")
         }
     }
-<<<<<<< HEAD
     public static var entityName :String?{
         return "reachability"
     }
-=======
-    public var entityName :String? = "reachability"
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
-    
+
     enum ReachabilityType {
         case WWAN,
         WiFi,
         NotConnected
     }
     
-    
-<<<<<<< HEAD
     public required init()
     {
-       
-=======
-    public required init(){
         
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     }
+    
     //Copy paste of below
     //http://stackoverflow.com/questions/25623272/how-to-use-scnetworkreachability-in-swift/25623647#25623647
     

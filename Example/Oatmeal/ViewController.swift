@@ -16,18 +16,18 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var helloOatmeal: UIButton!
     
-    var events : Events? = ~App()
-    
     @IBAction func bringTheOats(sender: AnyObject)
     {
-        if let events : Events = ~App()
+        if let events : Events = ~Oats()
         {
-            events.fire("sayHello", object: ["view" : self])
+            events.fire("sayHello", payload: ["view" : self])
         }
         
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.setEvents()
         self.checkDependencies()
         
@@ -35,37 +35,42 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
     }
     
-    func setEvents(){
-        if let events : Events = ~App(), http: Networking = ~App()
+    func setEvents()
+    {
+        if let events : Events = ~Oats(), http: Networking = ~Oats()
         {
+            print("Listening for presented...")
             events.listenFor("presented", global: true, handler: {
                 event in
                 
-                http.GET("https://api.github.com/repos/mikenolimits/OatmealFramework", type: RequestType.ShouldSendUrlAndReturnJson, parameters: nil, completion: {
-                    handler in
-                    
-                    if let response = handler.response
-                    {
-                        print(response)
-                    }
-                    
-                })
-                
+                 self.request(http)
             })
         }
     }
     
+    func request(http : Networking)
+    {
+        http.GET("https://api.github.com/repos/mikenolimits/Oatmeal", completion: {
+            handler in
+            
+            if let response = handler.response, github : Github = ~response, events : Events  = ~Oats()
+            {
+                events.fire("setText",payload : ["framework" : github, "view" : self])
+            }
+        })
+    }
+    
     func checkDependencies()
     {
-        guard let _ : ViewPresentor = ~App() else {
+        guard let _ : ViewPresentor = ~Oats() else
+        {
             var presentor = ViewPresentor()
-            presentor ~> App()
+            presentor ~> Oats()
             return
         }
     }
     
     
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

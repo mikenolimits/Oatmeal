@@ -9,8 +9,7 @@
 import Foundation
 
 public class Configuration : Resolveable{
-    
-<<<<<<< HEAD
+
     var cache : MemoryCache?
     
     public static var entityName :String?{
@@ -111,22 +110,3 @@ public class Configuration : Resolveable{
     }
 
 }
-=======
-    var cache : Cache
-    
-    public var entityName :String? = "config"
-    
-    required public init()
-    {
-        self.cache  = (~App())!
-    }
-    
-    public func get()->Any?{
-        return nil
-    }
-    
-    public func get()->AnyObject?{
-        return nil
-    }
-}
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e

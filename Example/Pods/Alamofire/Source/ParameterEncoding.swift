@@ -31,16 +31,11 @@ public enum Method: String {
     case OPTIONS, GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, CONNECT
 }
 
-<<<<<<< HEAD
 // MARK: ParameterEncoding
-=======
-// MARK: - ParameterEncoding
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
 /**
     Used to specify the way in which a set of parameters are applied to a URL request.
 
-<<<<<<< HEAD
     - `URL`:             Creates a query string to be set as or appended to any existing URL query for `GET`, `HEAD`, 
                          and `DELETE` requests, or set as the body for requests with any other HTTP method. The 
                          `Content-Type` HTTP header field of an encoded request with HTTP body is set to
@@ -67,25 +62,6 @@ public enum Method: String {
 public enum ParameterEncoding {
     case URL
     case URLEncodedInURL
-=======
-    - URL:          A query string to be set as or appended to any existing URL query for `GET`, `HEAD`, and `DELETE` 
-                    requests, or set as the body for requests with any other HTTP method. The `Content-Type` HTTP header 
-                    field of an encoded request with HTTP body is set to `application/x-www-form-urlencoded`. Since 
-                    there is no published specification for how to encode collection types, the convention of appending 
-                    `[]` to the key for array values (`foo[]=1&foo[]=2`), and appending the key surrounded by square 
-                    brackets for nested dictionary values (`foo[bar]=baz`).
-    - JSON:         Uses `NSJSONSerialization` to create a JSON representation of the parameters object, which is set as 
-                    the body of the request. The `Content-Type` HTTP header field of an encoded request is set to 
-                    `application/json`.
-    - PropertyList: Uses `NSPropertyListSerialization` to create a plist representation of the parameters object, 
-                    according to the associated format and write options values, which is set as the body of the 
-                    request. The `Content-Type` HTTP header field of an encoded request is set to `application/x-plist`.
-    - Custom:       Uses the associated closure value to construct a new request given an existing request and 
-                    parameters.
-*/
-public enum ParameterEncoding {
-    case URL
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     case JSON
     case PropertyList(NSPropertyListFormat, NSPropertyListWriteOptions)
     case Custom((URLRequestConvertible, [String: AnyObject]?) -> (NSMutableURLRequest, NSError?))
@@ -113,11 +89,7 @@ public enum ParameterEncoding {
         var encodingError: NSError? = nil
 
         switch self {
-<<<<<<< HEAD
         case .URL, .URLEncodedInURL:
-=======
-        case .URL:
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
             func query(parameters: [String: AnyObject]) -> String {
                 var components: [(String, String)] = []
                 for key in Array(parameters.keys).sort(<) {
@@ -125,7 +97,6 @@ public enum ParameterEncoding {
                     components += queryComponents(key, value)
                 }
 
-<<<<<<< HEAD
                 return (components.map { "\($0)=\($1)" } as [String]).joinWithSeparator("&")
             }
 
@@ -137,12 +108,6 @@ public enum ParameterEncoding {
                     break
                 }
 
-=======
-                return "&".join(components.map { "\($0)=\($1)" } as [String])
-            }
-
-            func encodesParametersInURL(method: Method) -> Bool {
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
                 switch method {
                 case .GET, .HEAD, .DELETE:
                     return true
@@ -159,14 +124,10 @@ public enum ParameterEncoding {
                 }
             } else {
                 if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
-<<<<<<< HEAD
                     mutableURLRequest.setValue(
                         "application/x-www-form-urlencoded; charset=utf-8",
                         forHTTPHeaderField: "Content-Type"
                     )
-=======
-                    mutableURLRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
                 }
 
                 mutableURLRequest.HTTPBody = query(parameters).dataUsingEncoding(

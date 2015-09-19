@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Oatmeal
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,7 +15,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+    {
+        var providers : [ServiceProvider] = [ServiceProvider]()
+        providers.append(OatmealServiceProvider())
+        providers.append(AppServiceProvider())
+        
+        print("Binding Service Providers")
+        Container.App.register(providers)
         // Override point for customization after application launch.
         return true
     }

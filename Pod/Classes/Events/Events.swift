@@ -7,35 +7,23 @@ import Foundation
 
 //Closure Based Events Bound to the container of the IoC.
 
-<<<<<<< HEAD
  public class Events : Eventable {
-=======
- public class Events : Resolveable {
-    
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     
     private lazy var globalListeners = [String : Event]()
     
     private lazy var localListeners  = [String : Event]()
     
-<<<<<<< HEAD
     public static var entityName : String?{
         return "events"
     }
     
-    public func all() -> [String : Event]
-=======
-    public var entityName  : String?
-    
     func all() -> [String : Event]
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     {
         return self.globalListeners
     }
 
     public required init()
     {
-<<<<<<< HEAD
         
     }
     
@@ -68,22 +56,9 @@ import Foundation
         return get(key) != nil
     }
     
-    /**
-       - parameter event : The name of the event so it can later be fired.
-       - parameter namespace: the namespace where the event should only be resolved.
-       - parameter handler : the closure or method that should be executed when the event is fired
-      
-        Bind a new event to a specific namespace, or replace a specific one
-    **/
-=======
-        self.entityName = "events"
-        
-    }
-    
     /*
       Bind a new event to a specific namespace
     */
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     public func listenFor(event:String,namespace:String,handler : (event : Event) -> Void)
     {
         let e  = Event(name : event)
@@ -95,9 +70,7 @@ import Foundation
         
         e.namespace = namespace
         localListeners[event] = e
-        
     }
-<<<<<<< HEAD
     /**
     - parameter event : The name of the event so it can later be fired.
     - parameter global: Defines if the event should be accessible from any part of the application
@@ -105,12 +78,11 @@ import Foundation
     
         Generic method for binding a method to the IoC
     **/
-=======
+
     
     /*
     Bind a new event to the IoC
     */
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     public func listenFor(event : String, global : Bool = true, handler : (event : Event) -> Void){
         
         let e  = Event(name : event)
@@ -126,7 +98,6 @@ import Foundation
         
         if(global)
         {
-<<<<<<< HEAD
             globalListeners[event] = e
         }
         //Reflect the currently used controller and gets it objectId
@@ -140,43 +111,13 @@ import Foundation
     /**
          - parameter event : The name of the event that should be removed from the IoC
     **/
-=======
-            
-            globalListeners[event] = e
-            
-        }
-        else
-        {
-            //Reflect the currently used controller and gets it objectId
-            if let className = getNamespace() {
-                //print("The Class Name is \(className)", appendNewline: false)
-                e.namespace = "\(className)"
-                localListeners[event] = e
-            }
-        }
-    }
-    
-    
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     public func dispose(event : String){
         globalListeners.removeValueForKey(event)
         localListeners.removeValueForKey(event)
     }
     
-<<<<<<< HEAD
-    /**
-       Iterates through all controller namespaces and removes their events
-    **/
-    public func flush()
-    {
-        //Loop through the current controllers events & "flush" them
-        if let className = getNamespace()
-        {
-            for (key,value) in localListeners
-            {
-                if let namespace = value.namespace where className == namespace
-                {
-=======
+
+
     
     public func flush()
     {
@@ -184,7 +125,6 @@ import Foundation
         if let className = getNamespace(){
             for (key,value) in localListeners{
                 if className == value.namespace!{
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
                     localListeners.removeValueForKey(key)
                 }
             }
@@ -192,13 +132,10 @@ import Foundation
         
     }
     
-    
-<<<<<<< HEAD
     func getNamespace()->String?
     {
         let current              = Controller.getCurrentController()
         let className            = Mirror(reflecting: current).subjectType
-        
         return String(className)
     }
     
@@ -222,57 +159,6 @@ import Foundation
         print("Event \(event) Does Not Exist.", terminator: "")
         
         return (false,nil)
-=======
-    func getNamespace()->String?{
-        
-        let current              = Controller.getCurrentController()
-        
-        let className            = Mirror(reflecting: current).subjectType
-        
-        
-        return String(className)
-    }
-    
-    public func fire(event : String,
-        object : [String : AnyObject]? = nil) -> (Bool,Event?){
-            
-            
-            if let e = globalListeners[event]{
-                
-                if let data = object{
-                    
-                    e.data = data
-                }
-                
-                e.callback!(event: e)
-            }
-            else if let e = localListeners[event]{
-                
-                let className = getNamespace()
-                
-                if let name = className where e.namespace == String(name){
-                    
-                        if let data = object
-                        {
-                            
-                            e.data = data
-                        }
-                        
-                        e.callback!(event : e)
-                        return (true,e)
-                }
-                else
-                {
-                    return (false,e)
-                }
-                
-            }
-            else{
-                print("Event Does Not Exist.", appendNewline: false)
-            }
-            
-            return (false,nil)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
-    }
+}
     
 }

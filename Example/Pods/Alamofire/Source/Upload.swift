@@ -202,11 +202,7 @@ extension Manager {
     */
     public enum MultipartFormDataEncodingResult {
         case Success(request: Request, streamingFromDisk: Bool, streamFileURL: NSURL?)
-<<<<<<< HEAD
         case Failure(ErrorType)
-=======
-        case Failure(NSError)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     }
 
     /**
@@ -290,13 +286,9 @@ extension Manager {
             let URLRequestWithContentType = URLRequest.URLRequest
             URLRequestWithContentType.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
 
-<<<<<<< HEAD
             let isBackgroundSession = self.session.configuration.identifier != nil
 
             if formData.contentLength < encodingMemoryThreshold && !isBackgroundSession {
-=======
-            if formData.contentLength < encodingMemoryThreshold {
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
                 do {
                     let data = try formData.encode()
                     let encodingResult = MultipartFormDataEncodingResult.Success(

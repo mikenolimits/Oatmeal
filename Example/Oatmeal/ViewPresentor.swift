@@ -10,48 +10,51 @@ import Foundation
 import UIKit
 import Oatmeal
 
-class ViewPresentor : ProactiveResolveable{
+class ViewPresentor : ProactiveResolveable
+{
     
-    var entityName  : String? = "viewpresentor"
-    
+    static var entityName  : String?{
+        return "viewpresentor"
+    }
     
     required init()
     {
         
     }
     
-    func render(view : ViewController)
+    func render(controller : ViewController)
     {
         UIView.animateWithDuration(5.5, delay: 1.0, options: UIViewAnimationOptions.CurveEaseIn,
             animations: {
-                view.Hello.alpha         = 0
-                view.Hello.text          = "And then there was Oatmeal..."
-                view.view.backgroundColor  = UIColor.blueColor()
-                view.view.layoutIfNeeded()
+                controller.Hello.textColor       = UIColor.whiteColor()
+                controller.Hello.alpha           = 0
+                controller.view.backgroundColor  = UIColor.blueColor()
             },completion: nil)
         
          UIView.animateWithDuration(5.5, delay: 2.0, options: UIViewAnimationOptions.CurveLinear,animations: {
-            view.Hello.alpha = 1
-            view.Hello.textColor = UIColor.whiteColor()
             let image = UIImage(named: "oatmeal")
             let imageView = UIImageView(image: image!)
-            imageView.frame = CGRect(x: view.view.frame.midX, y: view.view.frame.midY, width: 100, height: 100)
-            view.helloOatmeal.alpha = 0
-            view.view.addSubview(imageView)
-            view.view.addSubview(view.Hello)
-            
-        },completion: nil)
-            
+            let frame = controller.view.frame
+            imageView.frame = CGRect(x: frame.midX, y: frame.midY + 100, width: 100, height: 100)
+            controller.helloOatmeal.alpha = 0
+            controller.view.addSubview(imageView)
+            controller.view.addSubview(controller.Hello)
+            controller.view.layoutIfNeeded()
+            },completion: {
+                (value: Bool) in
+                
+                if let events : Events = ~Oats()
+                {
+                    events.fire("presented")
+                }
+         })
         
-        if let events : Events = ~App()
-        {
-          events.fire("presented")
-        }
     }
     
     func didBind()
     {
-        if let events : Events = ~App()
+        print("Did Resolve")
+        if let events : Events = ~Oats()
         {
             events.listenFor("sayHello", global: true, handler: {
                 event in
@@ -61,10 +64,23 @@ class ViewPresentor : ProactiveResolveable{
                     self.render(view)
                 }
             })
+            
+            events.listenFor("setText", global: true, handler: {
+                event in
+                
+                if let data = event.data, view = data["view"] as? ViewController, framework = data["framework"] as? Github, name = framework.name
+                {
+                    print("Got here 2")
+                    view.Hello.text  = "And then there was \(name)"
+                    view.Hello.alpha = 1
+                }
+            })
         }
     }
+
     
-    func didResolve(){
-        print("I have been resolved")
+    func didResolve()
+    {
+       
     }
 }

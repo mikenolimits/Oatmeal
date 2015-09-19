@@ -7,7 +7,6 @@
 //
 
 import Foundation
-<<<<<<< HEAD
  
 public protocol Oatmeal : Resolveable
 {
@@ -25,11 +24,4 @@ public protocol Oatmeal : Resolveable
     func register(provider:ServiceProvider)
     func register(providers:[ServiceProvider])
     func open(any: Any?) -> Any.Type
-=======
-
-public protocol Oatmeal{
-    func get<O:AnyObject>() -> O?
-    func bind(member: Resolveable)
-    func bind(key :String, member:Any)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 }

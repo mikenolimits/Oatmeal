@@ -9,12 +9,20 @@
 /* Begin PBXBuildFile section */
 		14A098B2112B5222B7097D93 /* Pods_Oatmeal_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B4B2729694A9353B38C235C /* Pods_Oatmeal_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		2A362C41A9050DC487EE23C3 /* Pods_Oatmeal_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C100D69567FBF1F422C8A218 /* Pods_Oatmeal_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
-		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
-		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
-		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		E739DB4C1B8AD2D000D15BFC /* ViewPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E739DB4B1B8AD2D000D15BFC /* ViewPresentor.swift */; };
+		E78A00A21BAD392C00D54CB2 /* App.txt in Resources */ = {isa = PBXBuildFile; fileRef = E78A00981BAD392C00D54CB2 /* App.txt */; };
+		E78A00A31BAD392C00D54CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00991BAD392C00D54CB2 /* AppDelegate.swift */; };
+		E78A00A61BAD392C00D54CB2 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E78A009E1BAD392C00D54CB2 /* Info.plist */; };
+		E78A00A71BAD392C00D54CB2 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = E78A009F1BAD392C00D54CB2 /* Settings.plist */; };
+		E78A00A81BAD392C00D54CB2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00A01BAD392C00D54CB2 /* ViewController.swift */; };
+		E78A00A91BAD392C00D54CB2 /* ViewPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00A11BAD392C00D54CB2 /* ViewPresentor.swift */; };
+		E78A00AF1BAD393F00D54CB2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E78A00AB1BAD393F00D54CB2 /* LaunchScreen.xib */; };
+		E78A00B01BAD393F00D54CB2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E78A00AD1BAD393F00D54CB2 /* Main.storyboard */; };
+		E78A00B51BAD395200D54CB2 /* AppServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00B21BAD395200D54CB2 /* AppServiceProvider.swift */; };
+		E78A00B61BAD395200D54CB2 /* EventServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00B31BAD395200D54CB2 /* EventServiceProvider.swift */; };
+		E78A00B71BAD395200D54CB2 /* OatmealServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00B41BAD395200D54CB2 /* OatmealServiceProvider.swift */; };
+		E78A00BB1BAD396000D54CB2 /* Github.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00B91BAD396000D54CB2 /* Github.swift */; };
+		E78A00BC1BAD396000D54CB2 /* Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00BA1BAD396000D54CB2 /* Owner.swift */; };
+		E78A00BE1BAD40B800D54CB2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E78A00BD1BAD40B800D54CB2 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,16 +43,25 @@
 		4D8DD05A6E5485514AF24561 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5614411FAD75A8C03F8E8D86 /* Pods-Oatmeal_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Oatmeal_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Oatmeal_Example/Pods-Oatmeal_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Oatmeal_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Oatmeal_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* Oatmeal_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Oatmeal_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B4B2729694A9353B38C235C /* Pods_Oatmeal_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Oatmeal_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C100D69567FBF1F422C8A218 /* Pods_Oatmeal_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Oatmeal_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E739DB4B1B8AD2D000D15BFC /* ViewPresentor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresentor.swift; sourceTree = "<group>"; };
+		E78A00981BAD392C00D54CB2 /* App.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = App.txt; sourceTree = "<group>"; };
+		E78A00991BAD392C00D54CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E78A009C1BAD392C00D54CB2 /* Foundation.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Foundation.playground; sourceTree = "<group>"; };
+		E78A009D1BAD392C00D54CB2 /* Framework.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Framework.playground; sourceTree = "<group>"; };
+		E78A009E1BAD392C00D54CB2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E78A009F1BAD392C00D54CB2 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		E78A00A01BAD392C00D54CB2 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E78A00A11BAD392C00D54CB2 /* ViewPresentor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPresentor.swift; sourceTree = "<group>"; };
+		E78A00AC1BAD393F00D54CB2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		E78A00AE1BAD393F00D54CB2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E78A00B21BAD395200D54CB2 /* AppServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppServiceProvider.swift; path = Providers/AppServiceProvider.swift; sourceTree = "<group>"; };
+		E78A00B31BAD395200D54CB2 /* EventServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventServiceProvider.swift; path = Providers/EventServiceProvider.swift; sourceTree = "<group>"; };
+		E78A00B41BAD395200D54CB2 /* OatmealServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OatmealServiceProvider.swift; path = Providers/OatmealServiceProvider.swift; sourceTree = "<group>"; };
+		E78A00B91BAD396000D54CB2 /* Github.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Github.swift; path = Models/Github.swift; sourceTree = "<group>"; };
+		E78A00BA1BAD396000D54CB2 /* Owner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Owner.swift; path = Models/Owner.swift; sourceTree = "<group>"; };
+		E78A00BD1BAD40B800D54CB2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F2AD7F2145C2D4994A2C6DFD /* Oatmeal.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Oatmeal.podspec; path = ../Oatmeal.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,24 +128,20 @@
 		607FACD21AFB9204008FA782 /* Example for Oatmeal */ = {
 			isa = PBXGroup;
 			children = (
-				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				607FACD91AFB9204008FA782 /* Main.storyboard */,
-				607FACDC1AFB9204008FA782 /* Images.xcassets */,
-				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
-				607FACD31AFB9204008FA782 /* Supporting Files */,
-				E739DB4B1B8AD2D000D15BFC /* ViewPresentor.swift */,
+				E78A00B81BAD395800D54CB2 /* Models */,
+				E78A00B11BAD394900D54CB2 /* Providers */,
+				E78A00AA1BAD392F00D54CB2 /* Base.lproj */,
+				E78A00981BAD392C00D54CB2 /* App.txt */,
+				E78A00991BAD392C00D54CB2 /* AppDelegate.swift */,
+				E78A009C1BAD392C00D54CB2 /* Foundation.playground */,
+				E78A009D1BAD392C00D54CB2 /* Framework.playground */,
+				E78A009E1BAD392C00D54CB2 /* Info.plist */,
+				E78A009F1BAD392C00D54CB2 /* Settings.plist */,
+				E78A00A01BAD392C00D54CB2 /* ViewController.swift */,
+				E78A00A11BAD392C00D54CB2 /* ViewPresentor.swift */,
 			);
 			name = "Example for Oatmeal";
 			path = Oatmeal;
-			sourceTree = "<group>";
-		};
-		607FACD31AFB9204008FA782 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				607FACD41AFB9204008FA782 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
@@ -139,6 +152,35 @@
 				4D8DD05A6E5485514AF24561 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
+			sourceTree = "<group>";
+		};
+		E78A00AA1BAD392F00D54CB2 /* Base.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				E78A00BD1BAD40B800D54CB2 /* Images.xcassets */,
+				E78A00AB1BAD393F00D54CB2 /* LaunchScreen.xib */,
+				E78A00AD1BAD393F00D54CB2 /* Main.storyboard */,
+			);
+			name = Base.lproj;
+			sourceTree = "<group>";
+		};
+		E78A00B11BAD394900D54CB2 /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				E78A00B21BAD395200D54CB2 /* AppServiceProvider.swift */,
+				E78A00B31BAD395200D54CB2 /* EventServiceProvider.swift */,
+				E78A00B41BAD395200D54CB2 /* OatmealServiceProvider.swift */,
+			);
+			name = Providers;
+			sourceTree = "<group>";
+		};
+		E78A00B81BAD395800D54CB2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E78A00B91BAD396000D54CB2 /* Github.swift */,
+				E78A00BA1BAD396000D54CB2 /* Owner.swift */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -191,7 +233,7 @@
 		607FACC81AFB9204008FA782 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
@@ -228,9 +270,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
-				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
-				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				E78A00AF1BAD393F00D54CB2 /* LaunchScreen.xib in Resources */,
+				E78A00B01BAD393F00D54CB2 /* Main.storyboard in Resources */,
+				E78A00A61BAD392C00D54CB2 /* Info.plist in Resources */,
+				E78A00BE1BAD40B800D54CB2 /* Images.xcassets in Resources */,
+				E78A00A21BAD392C00D54CB2 /* App.txt in Resources */,
+				E78A00A71BAD392C00D54CB2 /* Settings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,9 +386,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
-				E739DB4C1B8AD2D000D15BFC /* ViewPresentor.swift in Sources */,
+				E78A00BB1BAD396000D54CB2 /* Github.swift in Sources */,
+				E78A00B51BAD395200D54CB2 /* AppServiceProvider.swift in Sources */,
+				E78A00B61BAD395200D54CB2 /* EventServiceProvider.swift in Sources */,
+				E78A00BC1BAD396000D54CB2 /* Owner.swift in Sources */,
+				E78A00A81BAD392C00D54CB2 /* ViewController.swift in Sources */,
+				E78A00A31BAD392C00D54CB2 /* AppDelegate.swift in Sources */,
+				E78A00B71BAD395200D54CB2 /* OatmealServiceProvider.swift in Sources */,
+				E78A00A91BAD392C00D54CB2 /* ViewPresentor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,20 +415,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		607FACD91AFB9204008FA782 /* Main.storyboard */ = {
+		E78A00AB1BAD393F00D54CB2 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				607FACDA1AFB9204008FA782 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		607FACDE1AFB9204008FA782 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				607FACDF1AFB9204008FA782 /* Base */,
+				E78A00AC1BAD393F00D54CB2 /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		E78A00AD1BAD393F00D54CB2 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E78A00AE1BAD393F00D54CB2 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -472,11 +522,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Oatmeal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -486,6 +538,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Oatmeal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;

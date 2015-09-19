@@ -25,15 +25,11 @@ Alamofire is an HTTP networking library written in Swift.
 ## Requirements
 
 - iOS 8.0+ / Mac OS X 10.9+ / watchOS 2
-<<<<<<< HEAD
 - Xcode 7.0+
 
 ## Migration Guides
 
 - [Alamofire 2.0 Migration Guide](https://github.com/Alamofire/Alamofire/blob/master/Documentation/Alamofire%202.0%20Migration%20Guide.md)
-=======
-- Xcode 7.0 beta 5+
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
 ## Communication
 
@@ -66,11 +62,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-<<<<<<< HEAD
 pod 'Alamofire', '~> 2.0'
-=======
-pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git', :branch => 'swift-2.0'
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 ```
 
 Then, run the following command:
@@ -93,11 +85,7 @@ $ brew install carthage
 To integrate Alamofire into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-<<<<<<< HEAD
 github "Alamofire/Alamofire" ~> 2.0
-=======
-github "Alamofire/Alamofire" "swift-2.0"
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 ```
 
 ### Manually
@@ -255,10 +243,7 @@ Parameters can also be encoded as JSON, Property List, or any custom format, usi
 ```swift
 enum ParameterEncoding {
     case URL
-<<<<<<< HEAD
     case URLEncodedInURL
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     case JSON
     case PropertyList(format: NSPropertyListFormat, options: NSPropertyListWriteOptions)
     case Custom((URLRequestConvertible, [String: AnyObject]?) -> (NSMutableURLRequest, NSError?))
@@ -269,10 +254,7 @@ enum ParameterEncoding {
 ```
 
 - `URL`: A query string to be set as or appended to any existing URL query for `GET`, `HEAD`, and `DELETE` requests, or set as the body for requests with any other HTTP method. The `Content-Type` HTTP header field of an encoded request with HTTP body is set to `application/x-www-form-urlencoded`. _Since there is no published specification for how to encode collection types, Alamofire follows the convention of appending `[]` to the key for array values (`foo[]=1&foo[]=2`), and appending the key surrounded by square brackets for nested dictionary values (`foo[bar]=baz`)._
-<<<<<<< HEAD
 - `URLEncodedInURL`: Creates query string to be set as or appended to any existing URL query. Uses the same implementation as the `.URL` case, but always applies the encoded result to the URL.
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 - `JSON`: Uses `NSJSONSerialization` to create a JSON representation of the parameters object, which is set as the body of the request. The `Content-Type` HTTP header field of an encoded request is set to `application/json`.
 - `PropertyList`: Uses `NSPropertyListSerialization` to create a plist representation of the parameters object, according to the associated format and write options values, which is set as the body of the request. The `Content-Type` HTTP header field of an encoded request is set to `application/x-plist`.
 - `Custom`: Uses the associated closure value to construct a new request given an existing request and parameters.
@@ -346,15 +328,12 @@ Alamofire.upload(.POST, "http://httpbin.org/post", file: fileURL)
 Alamofire.upload(.POST, "http://httpbin.org/post", file: fileURL)
          .progress { bytesWritten, totalBytesWritten, totalBytesExpectedToWrite in
              print(totalBytesWritten)
-<<<<<<< HEAD
 
              // This closure is NOT called on the main queue for performance
              // reasons. To update your ui, dispatch to the main queue.
              dispatch_async(dispatch_get_main_queue) {
                  print("Total bytes written on main queue: \(totalBytesWritten)")
              }
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
          }
          .responseJSON { request, response, result in
              debugPrint(result)
@@ -418,15 +397,12 @@ Alamofire.download(.GET, "http://httpbin.org/stream/100", destination: destinati
 Alamofire.download(.GET, "http://httpbin.org/stream/100", destination: destination)
          .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
              print(totalBytesRead)
-<<<<<<< HEAD
 
              // This closure is NOT called on the main queue for performance
              // reasons. To update your ui, dispatch to the main queue.
              dispatch_async(dispatch_get_main_queue) {
                  print("Total bytes read on main queue: \(totalBytesRead)")
              }
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
          }
          .response { request, response, _, error in
              print(response)
@@ -623,11 +599,7 @@ let manager = Alamofire.Manager(configuration: configuration)
 #### Creating a Manager with Background Configuration
 
 ```swift
-<<<<<<< HEAD
 let configuration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.example.app.background")
-=======
-let configuration = NSURLSessionConfiguration.backgroundSessionConfiguration("com.example.app.background")
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 let manager = Alamofire.Manager(configuration: configuration)
 ```
 
@@ -1033,7 +1005,6 @@ These server trust policies will result in the following behavior:
 * `insecure.expired-apis.com` will never evaluate the certificate chain and will always allow the TLS handshake to succeed.
 * All other hosts will use the default evaluation provided by Apple.
 
-<<<<<<< HEAD
 ##### Subclassing Server Trust Policy Manager
 
 If you find yourself needing more flexible server trust policy matching behavior (i.e. wildcarded domains), then subclass the `ServerTrustPolicyManager` and override the `serverTrustPolicyForHost` method with your own custom implementation.
@@ -1050,8 +1021,6 @@ class CustomServerTrustPolicyManager: ServerTrustPolicyManager {
 }
 ```
 
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 #### Validating the Host
 
 The `.PerformDefaultEvaluation`, `.PinCertificates` and `.PinPublicKeys` server trust policies all take a `validateHost` parameter. Setting the value to `true` will cause the server trust evaluation to verify that hostname in the certificate matches the hostname of the challenge. If they do not match, evaluation will fail. A `validateHost` value of `false` will still evaluate the full certificate chain, but will not validate the hostname of the leaf certificate.
@@ -1066,7 +1035,6 @@ There are several cases where it may make sense to disable certificate chain val
 
 > It is recommended that `validateCertificateChain` always be set to `true` in production environments.
 
-<<<<<<< HEAD
 ---
 
 ## Component Libraries
@@ -1084,44 +1052,12 @@ The following rdars have some affect on the current implementation of Alamofire.
 * [rdar://22307360](http://www.openradar.me/radar?id=4895563208196096) - Swift #available check not working properly with min deployment target
 
 ## FAQ
-=======
-* * *
-
-## FAQ
-
-### When should I use Alamofire?
-
-If you're starting a new project in Swift, and want to take full advantage of its conventions and language features, Alamofire is a great choice. Although not as fully-featured as AFNetworking, Alamofire is much nicer to work with, and should satisfy the vast majority of networking use cases.
-
-> It's important to note that two libraries aren't mutually exclusive: AFNetworking and Alamofire can peacefully exist in the same code base.
-
-### When should I use AFNetworking?
-
-AFNetworking remains the premiere networking library available for OS X and iOS, and can easily be used in Swift, just like any other Objective-C code. AFNetworking is stable and reliable, and isn't going anywhere.
-
-Use AFNetworking for any of the following:
-
-- UIKit extensions, such as asynchronously loading images to `UIImageView`
-- Network reachability monitoring, using `AFNetworkReachabilityManager`
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
 ### What's the origin of the name Alamofire?
 
 Alamofire is named after the [Alamo Fire flower](https://aggie-horticulture.tamu.edu/wildseed/alamofire.html), a hybrid variant of the Bluebonnet, the official state flower of Texas.
 
-<<<<<<< HEAD
 ---
-=======
-## Open Rdars
-
-The following rdars have some affect on the current implementation of Alamofire.
-
-* [rdar://22024442](http://www.openradar.me/radar?id=6082025006039040) - Array of [SecCertificate] crashing Swift 2.0 compiler in optimized builds
-* [rdar://21349340](http://www.openradar.me/radar?id=5517037090635776) - Compiler throwing warning due to toll-free bridging issue in test case
-* [rdar://22307360](http://www.openradar.me/radar?id=4895563208196096) - Swift #available check not working properly with min deployment target
-
-* * *
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
 ## Credits
 

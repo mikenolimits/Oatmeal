@@ -8,22 +8,19 @@
 
 import Foundation
 import Alamofire
-<<<<<<< HEAD
 import AlamofireImage
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 import SwiftyJSON
 
 public class Networking : Resolveable
 {
-<<<<<<< HEAD
     public static var entityName : String?{
         return "networking"
     }
-    public var manager  : Alamofire.Manager?
+    public var manager  : Alamofire.Manager
     
     public required init()
     {
+        self.manager = Alamofire.Manager()
         
     }
     
@@ -39,121 +36,70 @@ public class Networking : Resolveable
         }
         
         return fire(route,completion:completion)
-=======
-    public var entityName : String? = "networking"
-    
-    
-    public required init()
-    {
-        
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
-        
     }
+
     
     public func fire(route : Route, completion:(response: ResponseHandler) -> Void)
     {
-<<<<<<< HEAD
-=======
-        var manager : Alamofire.Manager
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
-        
         //First we create the context of the request
         //Allowing for the developer to have full control over the request
         
-<<<<<<< HEAD
         if let config  = route.customConfiguration
         {
             self.manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: nil)
-=======
-        
-        if let config  = route.customConfiguration
-        {
-            manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: nil)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         }
         else
         {
             let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-<<<<<<< HEAD
             config.timeoutIntervalForResource = 600
             config.HTTPAdditionalHeaders      = Manager.defaultHTTPHeaders
             
             self.manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: route.sslPolicy)
-=======
-            config.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
-
-            
-            manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: route.sslPolicy)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         }
         
         switch(route.type)
         {
-         case .ShouldSendUrlAndReturnJson, .ShouldSendJsonAndReturnIt:
+        case .ShouldSendUrlAndReturnJson, .ShouldSendJsonAndReturnIt:
             
-<<<<<<< HEAD
-            manager!.request(route.compose()).responseJSON { request, response, result in
-                let handler = self.getHandler(response,result: result)
-                //handler     = self.adjustToExpectation(route, handler: handler)
-                completion(response: handler)
-            }
-         case .ShouldSendJsonAndReturnString,.ShouldSendUrlAndReturnString:
-            manager!.request(route.compose()).responseString{ request, response, result in
-=======
             manager.request(route.compose()).responseJSON { request, response, result in
                 var handler = self.getHandler(response,result: result)
                 handler     = self.adjustToExpectation(route, handler: handler)
                 completion(response: handler)
             }
-         case .ShouldSendJsonAndReturnString,.ShouldSendUrlAndReturnString:
+        case .ShouldSendJsonAndReturnString,.ShouldSendUrlAndReturnString:
             manager.request(route.compose()).responseString{ request, response, result in
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
                 var handler = self.getHandler(response,result: result)
                 handler     = self.adjustToExpectation(route, handler: handler)
                 
                 completion(response: handler)
             }
+         }
         }
         
-    }
-    
-    func adjustToExpectation(route:Route, var handler:ResponseHandler)->ResponseHandler
-    {
-        switch(route.type)
+        func adjustToExpectation(route:Route, var handler:ResponseHandler)->ResponseHandler
         {
+            switch(route.type)
+            {
             case .ShouldSendUrlAndReturnJson, .ShouldSendJsonAndReturnIt:
                 //Oh look here, we have no json, lets fix that.
                 guard let _ = handler.response else{
-<<<<<<< HEAD
                     let msg   = ["data" : ["message" : "No response recieved"]]
                     let json : JSON = JSON(msg)
                     handler.response = json
                     return handler
                 }
-=======
-                    let json : JSON = ["data" : ["message" : "No response recieved"]]
-                    handler.response = json
-                    return handler
-            }
-            
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
-            
+                
             case .ShouldSendJsonAndReturnString,.ShouldSendUrlAndReturnString:
-            
+                
                 guard let _ = handler.responseString else{
                     handler.responseString = "No Response recieved"
                     return handler
                 }
+                
+            }
             
+            return handler
         }
-        
-<<<<<<< HEAD
-=======
-        
-        
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
-        return handler
-    }
     
     
     func getHandler(response: NSHTTPURLResponse?,result : Result<String>)->ResponseHandler
@@ -186,10 +132,7 @@ public class Networking : Resolveable
         var handler = ResponseHandler()
         switch result {
         case .Success(let data):
-<<<<<<< HEAD
-=======
             /* parse your json here with swiftyjson */
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
             let data           = SwiftyJSON.JSON(data)
             handler.response   = data
             handler.headers    = response?.allHeaderFields
@@ -212,8 +155,6 @@ public class Networking : Resolveable
 
 
 extension Networking{
-    
-<<<<<<< HEAD
     public func GET(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: ResponseHandler) -> Void)
     {
         return fireAs(.GET, url: url, type: type, parameters: parameters,completion: completion)
@@ -244,20 +185,3 @@ extension Networking{
     }
 
 }
-=======
-    
-    public func GET(url:String, type: RequestType, parameters : [String:String]?,completion:(response: ResponseHandler) -> Void){
-        
-        let route = Route(method: .GET, baseUrl: url, endpoint: nil, type: type)
-        
-        if let params = parameters
-        {
-            route.parameters = params
-        }
-        
-        return fire(route,completion:completion)
-    }
-    
-
-}
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e

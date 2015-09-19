@@ -77,11 +77,7 @@ extension Request {
     */
     public func response(
         queue queue: dispatch_queue_t? = nil,
-<<<<<<< HEAD
         completionHandler: (NSURLRequest?, NSHTTPURLResponse?, NSData?, ErrorType?) -> Void)
-=======
-        completionHandler: (NSURLRequest?, NSHTTPURLResponse?, NSData?, NSError?) -> Void)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         -> Self
     {
         delegate.queue.addOperationWithBlock {
@@ -110,7 +106,6 @@ extension Request {
         -> Self
     {
         delegate.queue.addOperationWithBlock {
-<<<<<<< HEAD
             let result: Result<T.SerializedObject> = {
                 if let error = self.delegate.error {
                     return .Failure(self.delegate.data, error)
@@ -118,13 +113,6 @@ extension Request {
                     return responseSerializer.serializeResponse(self.request, self.response, self.delegate.data)
                 }
             }()
-=======
-            var result = responseSerializer.serializeResponse(self.request, self.response, self.delegate.data)
-
-            if let error = self.delegate.error {
-                result = .Failure(self.delegate.data, error)
-            }
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
 
             dispatch_async(queue ?? dispatch_get_main_queue()) {
                 completionHandler(self.request, self.response, result)

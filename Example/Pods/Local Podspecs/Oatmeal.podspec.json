@@ -25,7 +25,10 @@
   },
   "dependencies": {
     "Alamofire": [
-      "~> 2.0.0-beta.1"
+
+    ],
+    "AlamofireImage": [
+
     ],
     "SwiftyJSON": [
 

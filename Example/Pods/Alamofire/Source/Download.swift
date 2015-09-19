@@ -62,7 +62,6 @@ extension Manager {
     // MARK: Request
 
     /**
-<<<<<<< HEAD
         Creates a download request for the specified method, URL string, parameters, parameter encoding, headers
         and destination.
 
@@ -72,12 +71,6 @@ extension Manager {
         - parameter URLString:   The URL string.
         - parameter parameters:  The parameters. `nil` by default.
         - parameter encoding:    The parameter encoding. `.URL` by default.
-=======
-        Creates a download request using the shared manager instance for the specified method and URL string.
-
-        - parameter method:      The HTTP method.
-        - parameter URLString:   The URL string.
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         - parameter headers:     The HTTP headers. `nil` by default.
         - parameter destination: The closure used to determine the destination of the downloaded file.
 
@@ -86,23 +79,16 @@ extension Manager {
     public func download(
         method: Method,
         _ URLString: URLStringConvertible,
-<<<<<<< HEAD
         parameters: [String: AnyObject]? = nil,
         encoding: ParameterEncoding = .URL,
-=======
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
         headers: [String: String]? = nil,
         destination: Request.DownloadFileDestination)
         -> Request
     {
         let mutableURLRequest = URLRequest(method, URLString, headers: headers)
-<<<<<<< HEAD
         let encodedURLRequest = encoding.encode(mutableURLRequest, parameters: parameters).0
 
         return download(encodedURLRequest, destination: destination)
-=======
-        return download(mutableURLRequest, destination: destination)
->>>>>>> 3feadc1ac1c07cd95104e2d326bcbc82aae70e5e
     }
 
     /**
