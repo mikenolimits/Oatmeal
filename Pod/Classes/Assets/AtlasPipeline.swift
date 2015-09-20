@@ -84,7 +84,7 @@ public class AtlasPipeline : ProactiveResolveable
             completion : {}
         )
     }
-    
+    @available(OSX 10.10,iOS 8.0, *)
     public func create(atlasNamed : String, withImages : [String:AnyObject]) -> SKTextureAtlas
     {
        let dictionary : [String:AnyObject] = withImages

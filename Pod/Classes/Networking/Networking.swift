@@ -16,7 +16,12 @@ public class Networking : Resolveable
     public static var entityName : String?{
         return "networking"
     }
+    
     public var manager  : Alamofire.Manager
+    
+    public typealias completion  = (response: ResponseHandler) -> Void
+    public var done  : completion?
+    public var error : completion?
     
     public required init()
     {
@@ -36,6 +41,18 @@ public class Networking : Resolveable
         }
         
         return fire(route,completion:completion)
+    }
+    
+    public func fire(route:Route)
+    {
+        if let onCompleted = self.done
+        {
+            self.fire(route, completion: onCompleted)
+        }
+        else
+        {
+            self.fire(route,completion: { handler in })
+        }
     }
 
     

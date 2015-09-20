@@ -8,10 +8,20 @@
 
 
 import Foundation
-import UIKit
+
+#if os(iOS) || os(tvOS)
+   import UIKit
+#endif
+
+#if os(OSX)
+    import Cocoa
+    import AppKit
+#endif
 
 public class Controller{
     
+    
+    #if os(iOS)
     class func getCurrentController() -> UIViewController
     {
         var current  = UIApplication.sharedApplication().keyWindow!.rootViewController!
@@ -35,6 +45,18 @@ public class Controller{
         print("No navigation controller found..")
         return nil
     }
+    #endif
     
+    #if os(OSX)
     
+    class func getCurrentController() -> NSViewController?
+    {
+        return NSViewController()
+    }
+    
+    class func getNavigationController() -> NSWindow?
+    {
+        return nil
+    }
+    #endif
 }
