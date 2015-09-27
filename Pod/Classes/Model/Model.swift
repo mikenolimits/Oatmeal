@@ -16,9 +16,11 @@ public class Model : SerializebleObject,Modelable{
     public var reloaded : Bool
     public var maxPages : Int
     
-    public static var entityName : String?{
+    public static var entityName : String?
+    {
         return "model.*"
     }
+    
     public var route : Route?
     typealias Prepared = (Model: Model) -> Void
     

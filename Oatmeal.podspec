@@ -25,20 +25,19 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/mikenolimits/Oatmeal.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/mikenolimits'
 
-  s.platform     = :ios, '8.0'
+
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.9'
   s.requires_arc = true
 
-  s.source_files = 'Pod/Classes/**/*'
-  s.resource_bundles = {
-    'Oatmeal' => ['Pod/Assets/*.png']
-  }
+  s.source_files = 'Pod/Classes/**/*.swift'
+#s.resource_bundles = {
+#  'Oatmeal' => ['Pod/Assets/*.png']
+# }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
    s.dependency 'Alamofire'
    s.dependency 'AlamofireImage'
    s.dependency 'SwiftyJSON'
-   s.dependency 'Async'
 end

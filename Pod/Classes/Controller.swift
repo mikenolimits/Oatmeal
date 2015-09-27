@@ -56,7 +56,7 @@ public class Controller{
     
     class func getNavigationController() -> NSWindow?
     {
-        return nil
+        return NSWindow()
     }
     #endif
 }

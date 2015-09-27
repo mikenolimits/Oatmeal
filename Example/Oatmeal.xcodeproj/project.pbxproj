@@ -11,7 +11,6 @@
 		2A362C41A9050DC487EE23C3 /* Pods_Oatmeal_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C100D69567FBF1F422C8A218 /* Pods_Oatmeal_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		E78A00A21BAD392C00D54CB2 /* App.txt in Resources */ = {isa = PBXBuildFile; fileRef = E78A00981BAD392C00D54CB2 /* App.txt */; };
 		E78A00A31BAD392C00D54CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00991BAD392C00D54CB2 /* AppDelegate.swift */; };
-		E78A00A61BAD392C00D54CB2 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E78A009E1BAD392C00D54CB2 /* Info.plist */; };
 		E78A00A71BAD392C00D54CB2 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = E78A009F1BAD392C00D54CB2 /* Settings.plist */; };
 		E78A00A81BAD392C00D54CB2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00A01BAD392C00D54CB2 /* ViewController.swift */; };
 		E78A00A91BAD392C00D54CB2 /* ViewPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A00A11BAD392C00D54CB2 /* ViewPresentor.swift */; };
@@ -272,7 +271,6 @@
 			files = (
 				E78A00AF1BAD393F00D54CB2 /* LaunchScreen.xib in Resources */,
 				E78A00B01BAD393F00D54CB2 /* Main.storyboard in Resources */,
-				E78A00A61BAD392C00D54CB2 /* Info.plist in Resources */,
 				E78A00BE1BAD40B800D54CB2 /* Images.xcassets in Resources */,
 				E78A00A21BAD392C00D54CB2 /* App.txt in Resources */,
 				E78A00A71BAD392C00D54CB2 /* Settings.plist in Resources */,
