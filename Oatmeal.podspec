@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Oatmeal"
-  s.version          = "0.1.0"
+  s.version          = "0.2.0"
   s.summary          = "Oatmeal is a refreshing Swift Framework to make bootstrapping your apps much easier."
 
 # This description is used to generate tags and improve search results.
@@ -25,10 +25,8 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/mikenolimits/Oatmeal.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/mikenolimits'
 
-
-
-  s.ios.deployment_target  = '8.4'
-  s.osx.deployment_target  = '10.9'
+  s.ios.deployment_target = '8.4'
+  s.osx.deployment_target = '10.9'
   s.tvos.deployment_target = '9.0'
   s.requires_arc = true
 

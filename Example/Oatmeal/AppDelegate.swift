@@ -23,6 +23,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print("Binding Service Providers")
         Container.App.register(providers)
+        
+        
+        if let Settings : Configuration = ~Oats(){
+            Settings.set("Settings")
+            //print(Settings.get("GameParams"))
+            print(Settings.get("GameParams.Players.Snake.Wiggle"))
+        }
+        
         // Override point for customization after application launch.
         return true
     }

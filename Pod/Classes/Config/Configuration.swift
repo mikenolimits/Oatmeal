@@ -90,36 +90,32 @@ public class Configuration : Resolveable{
         // 2. if so, split the string into the dictionary search terms.
         if(key.containsString("."))
         {
-            var CurrentValue  = [String:Any]()
-            let searches      = key.explode(".")
-            var count         = 0
-            guard let TopNode = self.config.find({ $0.name == searches.first})?.value as? Dictionary<String,Any> else
+            var CurrentValue  = [String:AnyObject]()
+            var searches      = key.explode(".")
+            var keyCount      = 1
+            guard let TopNode = self.config.find({ $0.name == searches.first})?.value as? [String:AnyObject] else
             {
                return nil
             }
+            searches.removeFirst()
             
             CurrentValue = TopNode
             
-            if(searches.count >= 1)
+            for term in searches
             {
-                for term in searches
+                if let finalValue = CurrentValue[term] where searches.count <= keyCount
                 {
-                   if(searches.count == count)
-                   {
-                     if let finalValue = CurrentValue[term]
-                     {
-                        return Setting(name:term, value: (finalValue as? AnyObject)!)
-                      }
-                   }
-                    
-                   guard let nextDict = CurrentValue[term] as? Dictionary<String,Any> else
-                   {
-                      return nil
-                   }
-                    
-                   CurrentValue = nextDict
+                    return Setting(name:term, value: finalValue)
                 }
-                count++
+                
+                keyCount++
+                    
+                guard let nextDict = CurrentValue[term] as? [String:AnyObject] else
+                {
+                    return nil
+                }
+                    
+                CurrentValue = nextDict
             }
         }
         
