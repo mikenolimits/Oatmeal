@@ -62,7 +62,7 @@ class ViewController: UIViewController {
         
         http.fire(route)
         
-        /*
+        
         http.GET("https://api.github.com/repos/mikenolimits/Oatmeal", completion: {
             handler in
             
@@ -71,7 +71,7 @@ class ViewController: UIViewController {
                 events.fire("setText",payload : ["framework" : github, "view" : self])
             }
         })
-        */
+        
     }
     
     func checkDependencies()

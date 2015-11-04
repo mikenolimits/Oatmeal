@@ -22,7 +22,7 @@
 
 import Foundation
 
-#if os(iOS) || os(watchOS)
+#if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
 #elseif os(OSX)
 import Cocoa
@@ -154,9 +154,9 @@ public struct DynamicCompositeImageFilter: CompositeImageFilter {
     }
 }
 
-#if os(iOS) || os(watchOS)
+#if os(iOS) || os(tvOS) || os(watchOS)
 
-// MARK: - Single Pass Image Filters (iOS and watchOS only) -
+// MARK: - Single Pass Image Filters (iOS, tvOS and watchOS only) -
 
 /// Scales an image to a specified size.
 public struct ScaledToSizeFilter: ImageFilter, Sizable {
@@ -300,7 +300,7 @@ public struct CircleFilter: ImageFilter {
 
 // MARK: -
 
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 
 /// Blurs an image using a `CIGaussianBlur` filter with the specified blur radius.
 public struct BlurFilter: ImageFilter {
@@ -329,7 +329,7 @@ public struct BlurFilter: ImageFilter {
 
 #endif
 
-// MARK: - Composite Image Filters (iOS and watchOS only) -
+// MARK: - Composite Image Filters (iOS, tvOS and watchOS only) -
 
 /// Scales an image to a specified size, then rounds the corners to the specified radius.
 public struct ScaledToSizeWithRoundedCornersFilter: CompositeImageFilter {

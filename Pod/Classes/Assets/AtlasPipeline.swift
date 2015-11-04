@@ -11,10 +11,10 @@ import SpriteKit
 
 #if os(OSX)
     import AppKit
-    #endif
+#endif
 #if os(iOS) || os(tvOS)
     import UIKit
-    #endif
+#endif
 #if os(watchOS)
     import WatchKit
 #endif
@@ -84,7 +84,7 @@ public class AtlasPipeline : ProactiveResolveable
             completion : {}
         )
     }
-    @available(OSX 10.10,iOS 8.0, *)
+    @available(OSX 10.10,iOS 8.0, tvOS 1, *)
     public func create(atlasNamed : String, withImages : [String:AnyObject]) -> SKTextureAtlas
     {
        let dictionary : [String:AnyObject] = withImages

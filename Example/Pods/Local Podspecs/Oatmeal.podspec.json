@@ -15,15 +15,11 @@
   "social_media_url": "https://twitter.com/mikenolimits",
   "platforms": {
     "ios": "8.0",
-    "osx": "10.9"
+    "osx": "10.9",
+    "tvos": "9.0"
   },
   "requires_arc": true,
   "source_files": "Pod/Classes/**/*.swift",
-  "resource_bundles": {
-    "Oatmeal": [
-      "Pod/Assets/*.png"
-    ]
-  },
   "dependencies": {
     "Alamofire": [
 

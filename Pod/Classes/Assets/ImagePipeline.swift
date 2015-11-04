@@ -1,10 +1,14 @@
 import Foundation
 import AlamofireImage
 
-#if !os(iOS)
+#if os(OSX)
     import AppKit
-    #else
+#endif
+#if os(iOS) || os(tvOS)
     import UIKit
+#endif
+#if os(watchOS)
+    import WatchKit
 #endif
 
 public class ImagePipeline : Resolveable
@@ -18,7 +22,7 @@ public class ImagePipeline : Resolveable
         
 	}
     
-    #if !os(iOS)
+    #if os(OSX)
       //Step 1. Check if we can get the image from the cache 
       public func get(key:String)->NSImage?
       {

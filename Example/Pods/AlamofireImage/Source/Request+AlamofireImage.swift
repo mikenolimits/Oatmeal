@@ -23,7 +23,7 @@
 import Alamofire
 import Foundation
 
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 #elseif os(watchOS)
 import UIKit
@@ -33,12 +33,31 @@ import Cocoa
 #endif
 
 extension Request {
-    /// The completion handler closure used when an image response serializer completes.
-    public typealias CompletionHandler = (NSURLRequest?, NSHTTPURLResponse?, Result<Image>) -> Void
+    static var acceptableImageContentTypes: Set<String> = [
+        "image/tiff",
+        "image/jpeg",
+        "image/gif",
+        "image/png",
+        "image/ico",
+        "image/x-icon",
+        "image/bmp",
+        "image/x-bmp",
+        "image/x-xbitmap",
+        "image/x-win-bitmap"
+    ]
 
-    // MARK: - iOS and watchOS
+    /**
+        Adds the content types specified to the list of acceptable images content types for validation.
 
-#if os(iOS) || os(watchOS)
+        - parameter contentTypes: The additional content types.
+    */
+    public class func addAcceptableImageContentTypes(contentTypes: Set<String>) {
+        Request.acceptableImageContentTypes.unionInPlace(contentTypes)
+    }
+
+    // MARK: - iOS, tvOS and watchOS
+
+#if os(iOS) || os(tvOS) || os(watchOS)
 
     /**
         Creates a response serializer that returns an image initialized from the response data using the specified
@@ -59,15 +78,17 @@ extension Request {
     public class func imageResponseSerializer(
         imageScale imageScale: CGFloat = Request.imageScale,
         inflateResponseImage: Bool = true)
-        -> GenericResponseSerializer<UIImage>
+        -> ResponseSerializer<UIImage, NSError>
     {
-        return GenericResponseSerializer { request, response, data in
+        return ResponseSerializer { request, response, data, error in
+            guard error == nil else { return .Failure(error!) }
+
             guard let validData = data where validData.length > 0 else {
-                return .Failure(data, Request.imageDataError())
+                return .Failure(Request.imageDataError())
             }
 
-            guard Request.validateResponse(response) else {
-                return .Failure(data, Request.contentTypeValidationError())
+            guard Request.validateContentTypeForRequest(request, response: response) else {
+                return .Failure(Request.contentTypeValidationError())
             }
 
             do {
@@ -76,7 +97,7 @@ extension Request {
 
                 return .Success(image)
             } catch {
-                return .Failure(data, error)
+                return .Failure(error as NSError)
             }
         }
     }
@@ -105,7 +126,7 @@ extension Request {
     public func responseImage(
         imageScale: CGFloat = Request.imageScale,
         inflateResponseImage: Bool = true,
-        completionHandler: CompletionHandler)
+        completionHandler: Response<Image, NSError> -> Void)
         -> Self
     {
         return response(
@@ -126,7 +147,7 @@ extension Request {
     }
 
     private class var imageScale: CGFloat {
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
             return UIScreen.mainScreen().scale
         #elseif os(watchOS)
             return WKInterfaceDevice.currentDevice().screenScale
@@ -142,18 +163,20 @@ extension Request {
 
         - returns: An image response serializer.
     */
-    public class func imageResponseSerializer() -> GenericResponseSerializer<NSImage> {
-        return GenericResponseSerializer { request, response, data in
+    public class func imageResponseSerializer() -> ResponseSerializer<NSImage, NSError> {
+        return ResponseSerializer { request, response, data, error in
+            guard error == nil else { return .Failure(error!) }
+
             guard let validData = data where validData.length > 0 else {
-                return .Failure(data, Request.imageDataError())
+                return .Failure(Request.imageDataError())
             }
 
-            guard Request.validateResponse(response) else {
-                return .Failure(data, Request.contentTypeValidationError())
+            guard Request.validateContentTypeForRequest(request, response: response) else {
+                return .Failure(Request.contentTypeValidationError())
             }
 
             guard let bitmapImage = NSBitmapImageRep(data: validData) else {
-                return .Failure(data, Request.imageDataError())
+                return .Failure(Request.imageDataError())
             }
 
             let image = NSImage(size: NSSize(width: bitmapImage.pixelsWide, height: bitmapImage.pixelsHigh))
@@ -173,7 +196,7 @@ extension Request {
 
         - returns: The request.
     */
-    public func responseImage(completionHandler: CompletionHandler) -> Self {
+    public func responseImage(completionHandler: Response<Image, NSError> -> Void) -> Self {
         return response(
             responseSerializer: Request.imageResponseSerializer(),
             completionHandler: completionHandler
@@ -184,21 +207,16 @@ extension Request {
 
     // MARK: - Private - Shared Helper Methods
 
-    private class func validateResponse(response: NSHTTPURLResponse?) -> Bool {
-        let acceptableContentTypes: Set<String> = [
-            "image/tiff",
-            "image/jpeg",
-            "image/gif",
-            "image/png",
-            "image/ico",
-            "image/x-icon",
-            "image/bmp",
-            "image/x-bmp",
-            "image/x-xbitmap",
-            "image/x-win-bitmap"
-        ]
+    private class func validateContentTypeForRequest(
+        request: NSURLRequest?,
+        response: NSHTTPURLResponse?)
+        -> Bool
+    {
+        if let URL = request?.URL where URL.fileURL {
+            return true
+        }
 
-        if let mimeType = response?.MIMEType where acceptableContentTypes.contains(mimeType) {
+        if let mimeType = response?.MIMEType where Request.acceptableImageContentTypes.contains(mimeType) {
             return true
         }
 

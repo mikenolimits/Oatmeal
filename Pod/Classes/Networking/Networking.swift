@@ -78,14 +78,14 @@ public class Networking : Resolveable
         {
         case .ShouldSendUrlAndReturnJson, .ShouldSendJsonAndReturnIt:
             
-            manager.request(route.compose()).responseJSON { request, response, result in
-                var handler = self.getHandler(response,result: result)
+            manager.request(route.compose()).responseJSON { result in
+                var handler = self.getHandler(result.response,result: result.result)
                 handler     = self.adjustToExpectation(route, handler: handler)
                 completion(response: handler)
             }
         case .ShouldSendJsonAndReturnString,.ShouldSendUrlAndReturnString:
-            manager.request(route.compose()).responseString{ request, response, result in
-                var handler = self.getHandler(response,result: result)
+            manager.request(route.compose()).responseString{ result in
+                var handler = self.getHandler(result.response,result: result.result)
                 handler     = self.adjustToExpectation(route, handler: handler)
                 
                 completion(response: handler)
@@ -119,7 +119,7 @@ public class Networking : Resolveable
         }
     
     
-    func getHandler(response: NSHTTPURLResponse?,result : Result<String>)->ResponseHandler
+    func getHandler(response: NSHTTPURLResponse?,result : Result<String,NSError>)->ResponseHandler
     {
         var handler = ResponseHandler()
         switch result {
@@ -128,14 +128,12 @@ public class Networking : Resolveable
             handler.responseString   = data
             handler.success          = true
             
-        case .Failure(let data, let error):
+        case .Failure(let error):
             handler.message = "Request failed with error: \(error)"
             handler.error   = error
             
-            if let data = data {
-                handler.responseString =  ("\(NSString(data: data, encoding: NSUTF8StringEncoding)!)")
-                handler.response       = SwiftyJSON.JSON(data)
-            }
+            //handler.responseString =  ("\(NSString(data: error.description, encoding: NSUTF8StringEncoding)!)")
+            handler.response       = SwiftyJSON.JSON(error.description)
             handler.success  = false
         }
         handler.headers    = response?.allHeaderFields
@@ -144,7 +142,7 @@ public class Networking : Resolveable
         return handler
     }
     
-    func getHandler(response: NSHTTPURLResponse?,result : Result<AnyObject>)->ResponseHandler
+    func getHandler(response: NSHTTPURLResponse?,result : Result<AnyObject,NSError>)->ResponseHandler
     {
         var handler = ResponseHandler()
         switch result {
@@ -154,14 +152,15 @@ public class Networking : Resolveable
             handler.response   = data
             handler.headers    = response?.allHeaderFields
             
-        case .Failure(let data, let error):
+        case .Failure(let error):
             handler.message = "Request failed with error: \(error)"
             handler.error   = error
             
-            if let data = data {
-                handler.responseString =  ("\(NSString(data: data, encoding: NSUTF8StringEncoding)!)")
-                handler.response       = SwiftyJSON.JSON(data)
-            }
+        
+            //handler.responseString =  ("\(NSString(data: error.domain, encoding: NSUTF8StringEncoding)!)")
+            handler.response       = SwiftyJSON.JSON(error.description)
+            handler.success = false
+
         
         }
         handler.headers    = response?.allHeaderFields
@@ -193,7 +192,7 @@ extension Networking{
         if let url = NSURL(string: image)
         {
             let request    = NSURLRequest(URL:url)
-            downloader.downloadImage(URLRequest: request, completion: { request,response,result in
+            downloader.downloadImage(URLRequest: request, completion: { result in
                 
                 
             })

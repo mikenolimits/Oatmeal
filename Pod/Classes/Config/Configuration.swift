@@ -81,11 +81,48 @@ public class Configuration : Resolveable{
     
     public func get(key:String,namespace:String? = nil) -> AnyObject?
     {
-        return self.find(key,namespace:namespace)?.value
+        return self.find(key,namespace:namespace)?.value as? AnyObject
     }
 
     internal func find(key:String, namespace : String? = nil)->Setting?
     {
+        // 1. Check if dot notation is used.
+        // 2. if so, split the string into the dictionary search terms.
+        if(key.containsString("."))
+        {
+            var CurrentValue  = [String:Any]()
+            let searches      = key.explode(".")
+            var count         = 0
+            guard let TopNode = self.config.find({ $0.name == searches.first})?.value as? Dictionary<String,Any> else
+            {
+               return nil
+            }
+            
+            CurrentValue = TopNode
+            
+            if(searches.count >= 1)
+            {
+                for term in searches
+                {
+                   if(searches.count == count)
+                   {
+                     if let finalValue = CurrentValue[term]
+                     {
+                        return Setting(name:term, value: (finalValue as? AnyObject)!)
+                      }
+                   }
+                    
+                   guard let nextDict = CurrentValue[term] as? Dictionary<String,Any> else
+                   {
+                      return nil
+                   }
+                    
+                   CurrentValue = nextDict
+                }
+                count++
+            }
+        }
+        
         /*
             Is there a case use for caching settings other than to reduce IO reads of pList files?
         */

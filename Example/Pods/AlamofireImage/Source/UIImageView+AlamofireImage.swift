@@ -95,15 +95,29 @@ extension UIImageView {
     // MARK: - Private - AssociatedKeys
 
     private struct AssociatedKeys {
+        static var ImageDownloaderKey = "af_UIImageView.ImageDownloader"
         static var SharedImageDownloaderKey = "af_UIImageView.SharedImageDownloader"
-        static var ActiveRequestKey = "af_UIImageView.ActiveRequest"
+        static var ActiveRequestReceiptKey = "af_UIImageView.ActiveRequestReceipt"
     }
 
     // MARK: - Properties
 
-    /// The image downloader used to download all images. By default, this is the default `ImageDownloader` instance 
-    /// backed with an `AutoPurgingImageCache` which automatically evicts images from the cache when the memory capacity 
-    /// is reached or memory warning notifications occur.
+    /// The instance image downloader used to download all images. If this property is `nil`, the `UIImageView` will
+    /// fallback on the `af_sharedImageDownloader` for all downloads. The most common use case for needing to use a
+    /// custom instance image downloader is when images are behind different basic auth credentials.
+    public var af_imageDownloader: ImageDownloader? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.ImageDownloaderKey) as? ImageDownloader
+        }
+        set(downloader) {
+            objc_setAssociatedObject(self, &AssociatedKeys.ImageDownloaderKey, downloader, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
+    /// The shared image downloader used to download all images. By default, this is the default `ImageDownloader` 
+    /// instance backed with an `AutoPurgingImageCache` which automatically evicts images from the cache when the memory
+    /// capacity is reached or memory warning notifications occur. The shared image downloader is only used if the
+    /// `af_imageDownloader` is `nil`.
     public class var af_sharedImageDownloader: ImageDownloader {
         get {
             if let downloader = objc_getAssociatedObject(self, &AssociatedKeys.SharedImageDownloaderKey) as? ImageDownloader {
@@ -117,12 +131,12 @@ extension UIImageView {
         }
     }
 
-    var af_activeRequest: Request? {
+    var af_activeRequestReceipt: RequestReceipt? {
         get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.ActiveRequestKey) as? Request
+            return objc_getAssociatedObject(self, &AssociatedKeys.ActiveRequestReceiptKey) as? RequestReceipt
         }
         set(request) {
-            objc_setAssociatedObject(self, &AssociatedKeys.ActiveRequestKey, request, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &AssociatedKeys.ActiveRequestReceiptKey, request, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
@@ -251,7 +265,7 @@ extension UIImageView {
         placeholderImage: UIImage?,
         filter: ImageFilter?,
         imageTransition: ImageTransition,
-        completion: ((NSURLRequest?, NSHTTPURLResponse?, Result<UIImage>) -> Void)?)
+        completion: (Response<UIImage, NSError> -> Void)?)
     {
         af_setImageWithURLRequest(
             URLRequestWithURL(URL),
@@ -290,22 +304,26 @@ extension UIImageView {
         placeholderImage: UIImage?,
         filter: ImageFilter?,
         imageTransition: ImageTransition,
-        completion: ((NSURLRequest?, NSHTTPURLResponse?, Result<UIImage>) -> Void)?)
+        completion: (Response<UIImage, NSError> -> Void)?)
     {
         guard !isURLRequestURLEqualToActiveRequestURL(URLRequest) else { return }
 
         af_cancelImageRequest()
 
-        let imageDownloader = UIImageView.af_sharedImageDownloader
+        let imageDownloader = af_imageDownloader ?? UIImageView.af_sharedImageDownloader
         let imageCache = imageDownloader.imageCache
 
         // Use the image from the image cache if it exists
         if let image = imageCache?.imageForRequest(URLRequest.URLRequest, withAdditionalIdentifier: filter?.identifier) {
-            if let completion = completion {
-                completion(URLRequest.URLRequest, nil, .Success(image))
-            } else {
-                self.image = image
-            }
+            let response = Response<UIImage, NSError>(
+                request: URLRequest.URLRequest,
+                response: nil,
+                data: nil,
+                result: .Success(image)
+            )
+
+            completion?(response)
+            self.image = image
 
             return
         }
@@ -316,18 +334,19 @@ extension UIImageView {
         }
 
         // Download the image, then run the image transition or completion handler
-        let request = UIImageView.af_sharedImageDownloader.downloadImage(
+        let requestReceipt = imageDownloader.downloadImage(
             URLRequest: URLRequest,
             filter: filter,
-            completion: { [weak self] request, response, result in
+            completion: { [weak self] response in
                 guard let strongSelf = self else { return }
-                guard strongSelf.isURLRequestURLEqualToActiveRequestURL(request) else { return }
 
-                strongSelf.af_activeRequest = nil
+                completion?(response)
 
-                if let image = result.value {
-                    completion?(request, response, result)
+                guard strongSelf.isURLRequestURLEqualToActiveRequestURL(response.request) else { return }
 
+                strongSelf.af_activeRequestReceipt = nil
+
+                if let image = response.result.value {
                     UIView.transitionWithView(
                         strongSelf,
                         duration: imageTransition.duration,
@@ -337,13 +356,11 @@ extension UIImageView {
                         },
                         completion: imageTransition.completion
                     )
-                } else {
-                    completion?(request, response, result)
                 }
             }
         )
 
-        af_activeRequest = request
+        af_activeRequestReceipt = requestReceipt
     }
 
     // MARK: - Image Download Cancellation Methods
@@ -352,7 +369,12 @@ extension UIImageView {
         Cancels the active download request, if one exists.
     */
     public func af_cancelImageRequest() {
-        af_activeRequest?.cancel()
+        guard let activeRequestReceipt = af_activeRequestReceipt else { return }
+
+        let imageDownloader = af_imageDownloader ?? UIImageView.af_sharedImageDownloader
+        imageDownloader.cancelRequestForRequestReceipt(activeRequestReceipt)
+
+        af_activeRequestReceipt = nil
     }
 
     // MARK: - Private - URL Request Helper Methods
@@ -366,7 +388,7 @@ extension UIImageView {
 
     private func isURLRequestURLEqualToActiveRequestURL(URLRequest: URLRequestConvertible?) -> Bool {
         if let
-            currentRequest = af_activeRequest?.task.originalRequest
+            currentRequest = af_activeRequestReceipt?.request.task.originalRequest
             where currentRequest.URLString == URLRequest?.URLRequest.URLString
         {
             return true

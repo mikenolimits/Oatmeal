@@ -2,8 +2,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 target 'Oatmeal_Example', :exclusive => true do
-  pod 'Alamofire','~> 2.0'
-  pod 'AlamofireImage','~> 1.0'
+  pod 'Alamofire'
+  pod 'AlamofireImage'
   pod 'SwiftyJSON',:git =>  'https://github.com/SwiftyJSON/SwiftyJSON.git'
    pod "Oatmeal", :path => "../"
 end

@@ -21,7 +21,7 @@ import Foundation
 public class Controller{
     
     
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
     class func getCurrentController() -> UIViewController
     {
         var current  = UIApplication.sharedApplication().keyWindow!.rootViewController!
