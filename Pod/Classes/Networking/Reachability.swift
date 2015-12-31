@@ -17,9 +17,7 @@ public class Reachability : Resolveable {
             print("There is Internet : \(connected)")
         }
     }
-    public static var entityName :String?{
-        return "reachability"
-    }
+    public static var entityName :String? = "reachability"
 
     enum ReachabilityType {
         case WWAN,

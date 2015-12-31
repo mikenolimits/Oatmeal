@@ -13,9 +13,7 @@ import AlamofireImage
 
 public class ImagePipeline : Resolveable
 {
-    public static var entityName : String?{
-        return "imagepipeline"
-    }
+    public static var entityName : String? = "imagepipeline"
 
 	public required init()
 	{
@@ -24,15 +22,30 @@ public class ImagePipeline : Resolveable
     
     #if os(OSX)
       //Step 1. Check if we can get the image from the cache 
-      public func get(key:String)->NSImage?
+      public func get(key:String,completion:(response: NSImage?) -> Void)
       {
-         return nil
+         if let networking : Networking = ~Oats()
+         {
+           networking.DOWNLOAD(key, completion:  {
+              handler in
+    
+               completion(response: handler.image)
+            })
+         }
       }
     
-       #else
-      public func get(key:String)->UIImage?
+    #else
+      public func get(key:String,completion:(response: UIImage?) -> Void)
       {
-         return nil
+        if let networking : Networking = ~Oats()
+        {
+            networking.DOWNLOAD(key, completion: {
+                handler in
+                
+                completion(response: handler.image)
+            })
+        }
       }
-   #endif    
+   #endif
+
 }

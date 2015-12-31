@@ -11,21 +11,21 @@ import Alamofire
 import AlamofireImage
 import SwiftyJSON
 
+public typealias completion  = (response: ResponseHandler) -> Void
+
 public class Networking : Resolveable
 {
-    public static var entityName : String?{
-        return "networking"
-    }
+    public static var entityName : String? = "Networking"
     
     public var manager  : Alamofire.Manager
-    
-    public typealias completion  = (response: ResponseHandler) -> Void
+
     public var done  : completion?
     public var error : completion?
     
     public required init()
     {
         self.manager = Alamofire.Manager()
+        self.manager.startRequestsImmediately = true
         
     }
     
@@ -148,9 +148,12 @@ public class Networking : Resolveable
         switch result {
         case .Success(let data):
             /* parse your json here with swiftyjson */
-            let data           = SwiftyJSON.JSON(data)
-            handler.response   = data
-            handler.headers    = response?.allHeaderFields
+            
+            print(data)
+            handler.response       = SwiftyJSON.JSON(data)
+            handler.responseString = String(data)
+            handler.headers        = response?.allHeaderFields
+            print(result.error?.description)
             
         case .Failure(let error):
             handler.message = "Request failed with error: \(error)"
@@ -189,12 +192,15 @@ extension Networking{
     public func DOWNLOAD(image:String,completion:(response: ResponseHandler) -> Void)
     {
         let downloader = ImageDownloader()
+        var handler    = ResponseHandler()
         if let url = NSURL(string: image)
         {
             let request    = NSURLRequest(URL:url)
             downloader.downloadImage(URLRequest: request, completion: { result in
                 
-                
+                handler.image = result.result.value
+                handler.success  = result.result.isSuccess
+                completion(response: handler)
             })
         }
         

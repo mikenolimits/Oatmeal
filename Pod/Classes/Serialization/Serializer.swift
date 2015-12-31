@@ -4,65 +4,134 @@ import SwiftyJSON
 
 public class Serializer : Resolveable
 {
-    public static var entityName :String?{
-        return "serializer"
-    }
+    public static var entityName :String? = "serializer"
+    
     public typealias params         = [String:AnyObject]
     public typealias j              = SwiftyJSON.JSON
     
+    //This is really a counter of "how many function calls to parse are you willing to make"
+    public var recursiveCalls : Int
+    public var recursionLimit : Int
+    
     public required init()
     {
+       recursiveCalls = 0
+       recursionLimit = 10
+    }
+    
+    class func parse(object : Any)->Resolveable.Type?
+    {
+        if let _ = object as? MemoryCache
+        {
+            return MemoryCache.self
+        }
+        if let _ = object as? FileCache{
+            return FileCache.self
+        }
+        if let _ = object as? Configuration
+        {
+            return Configuration.self
+        }
+        if let _ = object as? FileLog
+        {
+            return FileLog.self
+        }
+        if let _ = object as? Reachability
+        {
+            return Reachability.self
+        }
+        if let _ = object as? Networking
+        {
+            return Networking.self
+        }
+        if let _ = object as? HttpLog
+        {
+            return HttpLog.self
+        }
+        if let _ = object as? Serializer
+        {
+            return Serializer.self
+        }
         
+        return nil
+    }
+    
+    public func parse(model: Modelable, JSON : j) -> Modelable?
+    {
+        let reflectedProperties = model.toProps()
+        //var reflectedModels     = properties()
+        if(recursiveCalls <= recursionLimit)
+        {
+            //Inject any depedencies from the container including submodels.
+            for (key,prop) in model.dependencies(reflectedProperties)
+            {
+                if let resolved = ~key as? NSObject
+                {
+                    //Now lets check if the dependency we pulled is actually a model too!
+                    print(resolved)
+                    if let modelableMember = resolved as? Modelable
+                    {
+                        recursiveCalls++
+                        let replaced = parse(modelableMember, JSON: JSON[prop.label])
+                        model.setValue(replaced, forKey: prop.label)
+                    }
+                    else
+                    {
+                       model.setValue(resolved, forKey: prop.label)
+                    }
+                }
+            }
+            //Check for any models in layers below
+            
+            for (key,prop) in reflectedProperties
+            {
+                
+                let jValue = JSON[key]
+                let casted = cast(jValue, prop: prop)
+                print(prop.type)
+                
+                if let _ = casted.find({prop.type == $0})
+                {
+                    switch(jValue.type)
+                    {
+                    case .Number:
+                        
+                        let assertMirror = Mirror(reflecting: jValue)
+                        
+                        if(assertMirror.displayStyle != .Optional)
+                        {
+                            model.setValue(jValue.numberValue, forKey: key)
+                        }
+                        
+                    case .String:
+                        model.setValue(jValue.stringValue, forKey: key)
+                        
+                    case .Bool:
+                        model.setValue(jValue.boolValue, forKey: key)
+                        
+                    case .Array: break
+                        //model.setValue(jValue.arrayValue, forKey: key)
+                        
+                    default:
+                        break
+                    }
+                }
+            }
+        }
+        return model
     }
     
     public func parse<T:Modelable>(JSON: j)->T?
     {
-        let model = T()
-        let reflectedProperties = toProps(model)
-        
-        //1. Check for properties that might also be in the container.
-        
-        let resolveableTypes    = model.dependsOn()
-        print("Resolable are...:")
-        print(resolveableTypes)
-        
-        
-        for(key,value) in JSON
+        if let model = parse(T.init(), JSON: JSON) as? T
         {
-            let casted  = cast(value)
-
-            
-            if let jValue  = reflectedProperties[key] where (casted.find({$0 == jValue.type}) != nil)
-            {
-                switch(value.type)
-                {
-                  case .Number:
-                    
-                    let assertMirror = Mirror(reflecting: jValue)
-                    print("Display style is \(assertMirror.displayStyle)")
-                      
-                    if(assertMirror.displayStyle != .Optional)
-                    {
-                        model.setValue(value.numberValue, forKey: key)
-                    }
-                    
-                   case .String:
-                      model.setValue(value.stringValue, forKey: key)
-                   
-                   case .Bool:
-                       model.setValue(value.boolValue, forKey: key)
-                    
-                   default:
-                      break
-                  }
-                }
-           
+            //Reset Calls
+            recursiveCalls = 0
+            return model
         }
-        print(model)
-        return model
-        
+        return nil
     }
-    
+        
     public func serialize<T:Modelable>(json:params)->T?
     {
         let json = j(json)
@@ -90,7 +159,7 @@ public class Serializer : Resolveable
     /*
     Will return all the types we can possibly cast the JSON value to.
     */
-    func cast(uncasted: JSON) -> [Any.Type?]
+    func cast(uncasted: JSON, prop: Property) -> [Any.Type?]
     {
         var castable = [Any.Type?]()
         switch(uncasted.type)
@@ -98,8 +167,8 @@ public class Serializer : Resolveable
         case .Number,.String:
             castable = parseNumber(uncasted, castable: castable)
             castable = parseString(uncasted, castable: castable)
-        //case .Array:
-            //castable = parseArray(uncasted, castable: castable)
+        case .Array:
+            castable = parseArray(uncasted, castable: castable, prop: prop)
         default: break
         }
         /*
@@ -112,33 +181,51 @@ public class Serializer : Resolveable
         */
         return castable
     }
-   /*
-    func parseArray(uncasted: JSON, var castable:[Any.Type?]) -> [Any.Type?]
+   
+    func parseArray(uncasted: JSON, var castable:[Any.Type?], prop: Property) -> [Any.Type?]
     {
-        /*
-        var stillParsable = true
-        
-        if let array  =  uncasted.array
+        for (_,value) in uncasted
         {
-            for i in array where stillParsable
+            if let asString = value.string where asString != ""
             {
-                
-                var arrayCastable = parseNumber(i, castable: castable)
-                arrayCastable     = parseString(i, castable: castable)
-                
-               
-                for i in arrayCastable{
-                   
-                }
-                
+                castable.append([String].self)
+                castable.append([NSString].self)
+            }
+            if let _ = uncasted.double
+            {
+                castable.append(open([Double].self))
+                castable.append([Double].self)
+            }
+            if let _ = uncasted.float
+            {
+                castable.append(open([Float]?))
+                castable.append([Float].self)
+            }
+            if let _ = uncasted.int16
+            {
+                castable.append(open([Int16]?))
+                castable.append([Int16].self)
+            }
+            if let _ = uncasted.int32
+            {
+                castable.append([Int32].self)
+            }
+            if let _ = uncasted.int64
+            {
+                castable.append([Int64].self)
+            }
+            if let _ = uncasted.int
+            {
+                castable.append([Int?].self)
+                castable.append([Int].self)
             }
             
         }
-        */
+    
         return castable
         
     }
-    */
+    
     func parseString(uncasted: JSON, var castable:[Any.Type?]) -> [Any.Type?]
     {
         if let _ = uncasted.string

@@ -10,9 +10,14 @@ import SwiftyJSON
 prefix operator ~{}
 infix operator <~>{associativity left precedence 140}
 
-public prefix func ~<T: AnyObject>(resolver: Oatmeal) -> T?
+public prefix func ~<T: Resolveable>(resolver: Oatmeal) -> T?
 {
     return resolver.get()
+}
+
+public prefix func ~(key: String) -> Resolveable?
+{
+    return Oats().get(key)
 }
 
 public prefix func ~<T: Modelable>(json : JSON) -> T?
@@ -32,8 +37,13 @@ public prefix func ~<T: Modelable>(json : String) -> T? {
 }
 
 //infix operator ~>{ associativity left precedence 140 }
-public func ~><T: Resolveable>(inout left: T, container: Oatmeal){
-    container.bind(left)
+public func ~><T: Resolveable>(inout member: T, container: Oatmeal){
+    container.bind(member)
+}
+
+public func ~><T: Resolveable>(inout member: T, key: String)
+{
+    Oats().bind(key, member: member.dynamicType)
 }
 
 public func ~><T: Provider>(inout provider: T, container: Oatmeal){
@@ -53,13 +63,23 @@ public func ~><T: Events>(events: T?, eventName: String)
 }
 
 public func ~><T: Modelable>(inout left: T, json: String)->T?{
+    //Models use the same function signature as Resolveables, which can cause confusion when attempting to toss them into the IoC. We fix this by using the protocol method
+    if left.bindsToContainer()
+    {
+        left ~> "\(left.dynamicType)"
+    }
     if let model : T = ~json{
         return model
     }
     return nil
 }
 
-public func ~><T: Modelable>(left: T, json: JSON)->T?{
+public func ~><T: Modelable>(var left: T, json: JSON)->T?{
+    //Models use the same function signature as Resolveables, which can cause confusion when attempting to toss them into the IoC. We fix this by using the protocol method
+    if left.bindsToContainer()
+    {
+        left ~> "\(left.dynamicType)"
+    }
     if let model : T = ~json{
         return model
     }

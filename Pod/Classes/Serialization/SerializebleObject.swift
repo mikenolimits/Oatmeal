@@ -8,34 +8,71 @@
 
 import Foundation
 
-public class SerializebleObject: NSObject
+public class SerializebleObject: NSObject, NSCoding,Resolveable
 {
     //Required Init
+    public static var entityName : String?
+    
     public required override init()
     {
+    
+    }
+    
+    required public init?(coder aDecoder: NSCoder)
+    {
         super.init()
+        let properties = toProps()
+        for i in properties
+        {
+            let jValue = i.1.value
+            let key    = i.0
+            var value : AnyObject? = nil
+            switch jValue
+            {
+            case _ as Int:
+                value  = aDecoder.decodeIntegerForKey(key)
+            case _ as  Double:
+                value  = aDecoder.decodeDoubleForKey(key)
+            case _ as AnyObject:
+                value  = aDecoder.decodeObjectForKey(key)
+            default:
+                print("something else")
+            }
+            setValue(value, forUndefinedKey: key)
+        }
+        
     }
     
-    //Required init for NSCoding
-    public convenience required init?(coder: NSCoder) {
-        self.init()
-    }
-    
-    /*
-    public class func encodeWithCoder(theObject: NSObject, aCoder: NSCoder) {
-        let (hasKeys, _) = toDictionary(theObject, performKeyCleanup:false)
-        for (key, value) in hasKeys {
-            aCoder.encodeObject(value, forKey: key as! String)
+    public func encodeWithCoder(aCoder: NSCoder)
+    {
+        let properties = toProps()
+        for i in properties
+        {
+            let jValue = i.1.value
+            let key    = i.0
+            switch jValue
+            {
+                case let v as Int:
+                    aCoder.encodeInteger(v, forKey: key)
+                case let v as Double:
+                    aCoder.encodeDouble(v, forKey: key)
+                case let v as String:
+                    aCoder.encodeObject(v, forKey: key)
+                case let v as AnyObject:
+                    aCoder.encodeObject(v, forKey: key)
+                default:
+                        print("something else")
+            }
         }
     }
-    */
+    
     
     public override func setValue(value: AnyObject!, forUndefinedKey key: String)
     {
         
-        if let serializableThing = self as? canSerialize
+        if let serializableThing = self as? Autoresolves
         {
-            serializableThing.setValue(value, forUndefinedKey: key)
+            serializableThing.setValue(value, forKey: key)
             return
         }
         
@@ -46,11 +83,4 @@ public class SerializebleObject: NSObject
     
     }
     
-}
-
-/**
-Protocol for the workaround when using generics. See WorkaroundSwiftGenericsTests.swift
-*/
-public protocol canSerialize {
-    func setValue(value: AnyObject!, forUndefinedKey key: String)
 }

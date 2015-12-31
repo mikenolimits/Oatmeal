@@ -16,11 +16,6 @@ public class Model : SerializebleObject,Modelable{
     public var reloaded : Bool
     public var maxPages : Int
     
-    public static var entityName : String?
-    {
-        return "model.*"
-    }
-    
     public var route : Route?
     typealias Prepared = (Model: Model) -> Void
     
@@ -38,7 +33,7 @@ public class Model : SerializebleObject,Modelable{
         }
         didSet
         {
-            pages = pages.unique()
+            pages = $.uniq(pages)
         }
     }
     
@@ -92,6 +87,10 @@ public class Model : SerializebleObject,Modelable{
         
         reloadModel()
     }
+
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public func setEvents()
     {
@@ -126,6 +125,10 @@ public class Model : SerializebleObject,Modelable{
     {
         //fatalError("This method must be overriden")
         return self.init()
+    }
+    
+    public func bindsToContainer() -> Bool {
+        return false
     }
     
     

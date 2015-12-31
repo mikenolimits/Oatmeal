@@ -23,6 +23,9 @@ final class OatmealServiceProvider : ServiceProvider
         Reachability.self,
         Networking.self,
         HttpLog.self,
-        Serializer.self
+        Serializer.self,
+        Reflections.self,
+        Owner.self,
+        Github.self
     ]
 }

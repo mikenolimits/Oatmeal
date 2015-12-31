@@ -13,11 +13,9 @@ import Foundation
     
     private lazy var localListeners  = [String : Event]()
     
-    public static var entityName : String?{
-        return "events"
-    }
+    public static var entityName : String? = "events"
     
-    func all() -> [String : Event]
+    public func all() -> [String : Event]
     {
         return self.globalListeners
     }
@@ -103,7 +101,7 @@ import Foundation
         //Reflect the currently used controller and gets it objectId
         else if let className = getNamespace()
         {
-            e.namespace = "\(className)"
+            e.namespace = String(className)
             localListeners[event] = e
         }
     }

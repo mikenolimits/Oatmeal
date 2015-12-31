@@ -2,19 +2,18 @@ import Foundation
 
 public class Container : Oatmeal
 {
-    public static var entityName : String?{
-        return "container"
-    }
+    public static var entityName : String? = "Container"
     /* 
        The singleton reference to the container itself
     */
     
     static public let App = Container()
     
+    
     /* 
        Singletons bound to the app always need a reference
     */
-    public var singletons :  [Resolveable] = [Events()]
+    public var singletons :  [Resolveable] = [Events(),Reflections()]
     
     /*
        Lazy members bound to the app do not need a reference, and will be deinitlized 
@@ -32,11 +31,21 @@ public class Container : Oatmeal
     
     }
     
-    func didResolve(member : Any)
+    public func didResolve(member : Any)
     {
         if let proactiveMember = member as? ProactiveResolveable
         {
             proactiveMember.didResolve()
+        }
+        //We're going to ensure that all events are registered as soon as the class is resolved.
+        if let eventUser = member as? UsesEvents
+        {
+            eventUser.setEvents()
+        }
+        
+        if let autoresolver = member as? Autoresolves
+        {
+            injectDependencies(autoresolver)
         }
     }
     
@@ -46,24 +55,24 @@ public class Container : Oatmeal
        Use it. Otherwise we will get the name of the class instead.
     */
     
-    public func get<T : AnyObject>() -> T?
+    public func get<O : Resolveable>() -> O?
     {
-        guard let member = T.self as? Resolveable.Type, name = member.entityName else
+        guard let name = O.entityName else
         { 
-            let name = String(T).lowercaseString
+            let name = String(O).lowercaseString
            
-            return self.get(name) as? T
+            return self.get(name) as? O
         }
         
         //are we certain this member exists?
-        return self.get(name) as? T
+        return self.get(name) as? O
     }
     
     /*
       First we will check for a framework bound member because it will be most common
       Second we we will check for user bound members.
     */
-    public func get(key:String)->Any?
+    public func get(key:String)->Resolveable?
     {
         if let member = members[key]
         {
@@ -72,7 +81,8 @@ public class Container : Oatmeal
             self.didResolve(entity)
             return entity
         }
-        else if let member = singletons.find({$0.dynamicType.entityName == key})
+        
+        if let member = singletons.find({$0.dynamicType.entityName == key})
         {
             //Singletons are always initialized
             self.didResolve(member)
@@ -120,16 +130,16 @@ public class Container : Oatmeal
     public func bind(member: Resolveable)
     {
        
+        
         //Now that we have both the type and a reference to the class,
         //We can initialize it whenever its needed.
         let entity = member.dynamicType
         
         guard let name = member.dynamicType.entityName else{
-            let dynamicName = "\(entity.dynamicType)".lowercaseString
+            let dynamicName = "\(entity)".capitalizedString.stringByReplacingOccurrencesOfString(".Type",withString: "")
             self.members[dynamicName] = entity
             return
         }
-            
         self.members[name] = entity
         
         //In case the developer wants to listen for the binding of their class
@@ -174,11 +184,22 @@ public class Container : Oatmeal
             }
             else
             {
-                let name = "\(i.dynamicType)".lowercaseString
+                let name = "\(i.dynamicType)".capitalizedString.stringByReplacingOccurrencesOfString(".Type",withString: "")
                 members["\(name)"] = i
             }
         }
 
+    }
+    
+    public func injectDependencies(obj: Autoresolves)
+    {
+        for (key,prop) in obj.dependencies()
+        {
+            if let resolved = ~key as? NSObject
+            {
+                obj.setValue(resolved, forKey: prop.label)
+            }
+        }
     }
     
     
@@ -196,7 +217,4 @@ public class Container : Oatmeal
         
         return mi.subjectType
     }
-    
-
-    
 }

@@ -1,16 +1,19 @@
 PODS:
-  - Alamofire (3.1.1)
-  - AlamofireImage (2.1.0):
+  - Alamofire (3.1.4)
+  - AlamofireImage (2.2.0):
     - Alamofire (~> 3.1)
-  - Oatmeal (0.1.0):
+  - Carlos (0.5)
+  - Oatmeal (0.2.2):
     - Alamofire
     - AlamofireImage
+    - Carlos
     - SwiftyJSON
-  - SwiftyJSON (2.3.1)
+  - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
   - Alamofire
   - AlamofireImage
+  - Carlos
   - Oatmeal (from `../`)
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
 
@@ -22,13 +25,14 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   SwiftyJSON:
-    :commit: ece271ab33839d11c2153d71fb59c53545132cf9
+    :commit: 5f59648a6e9356b26c5cb698ab924fa7d750b6c9
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
-  Alamofire: 9b0a7188b961a03914a99304488bd226b0e46c0e
-  AlamofireImage: 97e00995920d85b5cb23ee4c3b7f92605f5dc74b
-  Oatmeal: c3ca197d6ff31ce08ca9ab79f4b6c6202b5de70a
-  SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
+  Alamofire: fbc829692f351fa1d8a31dd75fd7f7f56fea31fb
+  AlamofireImage: bedb8a4bdfb98eda81ba12952fba6e9e90420922
+  Carlos: 2519b03da9bf900b5aa698659a519ef5a8f6afc0
+  Oatmeal: 8105ae300388c8c2478f2389442599ca5c37ee8f
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 COCOAPODS: 0.39.0

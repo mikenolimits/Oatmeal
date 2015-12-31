@@ -1,7 +1,7 @@
 import Foundation
 
 
-public protocol Loggable : Resolveable
+public protocol Loggable : ProactiveResolveable
 {
 	func success(message:String)
     func success<T:AnyObject>(message:[T])

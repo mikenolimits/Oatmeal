@@ -86,12 +86,14 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Oatmeal_Tests/Alamofire.framework"
   install_framework "Pods-Oatmeal_Tests/AlamofireImage.framework"
+  install_framework "Pods-Oatmeal_Tests/Carlos.framework"
   install_framework "Pods-Oatmeal_Tests/Oatmeal.framework"
   install_framework "Pods-Oatmeal_Tests/SwiftyJSON.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Oatmeal_Tests/Alamofire.framework"
   install_framework "Pods-Oatmeal_Tests/AlamofireImage.framework"
+  install_framework "Pods-Oatmeal_Tests/Carlos.framework"
   install_framework "Pods-Oatmeal_Tests/Oatmeal.framework"
   install_framework "Pods-Oatmeal_Tests/SwiftyJSON.framework"
 fi

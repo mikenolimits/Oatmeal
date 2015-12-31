@@ -14,7 +14,8 @@ public protocol Oatmeal : Resolveable
         get set 
     }
     init()
-    func get<O:AnyObject>() -> O?
+    func get(key:String)->Resolveable?
+    func get<O:Resolveable>() -> O?
     func has(key:String)->Bool
     func has(key:Resolveable.Type)->Bool
     func bind(member: Resolveable)
@@ -23,5 +24,6 @@ public protocol Oatmeal : Resolveable
     func bindIf(condition : ()->Bool, withMember : Resolveable.Type, completion : ()->())
     func register(provider:ServiceProvider)
     func register(providers:[ServiceProvider])
+    func injectDependencies(obj: Autoresolves)
     func open(any: Any?) -> Any.Type
 }

@@ -1,256 +1,184 @@
+////
+////  Int.swift
+////  Cent
+////
+////  Created by Ankur Patel on 6/30/14.
+////  Copyright (c) 2014 Encore Dev Labs LLC. All rights reserved.
+////
 //
-//  Int.swift
-//  ExSwift
+//import Foundation
 //
-//  Created by pNre on 03/06/14.
-//  Copyright (c) 2014 pNre. All rights reserved.
+//public struct CalendarMath {
+//    private let unit: NSCalendarUnit
+//    private let value: Int
+//    private var calendar: NSCalendar {
+//        return NSCalendar.autoupdatingCurrentCalendar()
+//    }
+//    
+//    public init(unit: NSCalendarUnit, value: Int) {
+//        self.unit = unit
+//        self.value = value
+//    }
+//    
+//    private func generateComponents(modifer: (Int) -> (Int) = (+)) -> NSDateComponents {
+//        let components = NSDateComponents()
+//        components.setValue(modifer(value), forComponent: unit)
+//        return components
+//    }
+//    
+//    internal func from(date: NSDate) -> NSDate? {
+//        return calendar.dateByAddingComponents(generateComponents(), toDate: date, options: [])
+//    }
+//    
+//    internal var fromNow: NSDate? {
+//        return from(NSDate())
+//    }
+//    
+//  internal func before(date: NSDate) -> NSDate? {
+//        return calendar.dateByAddingComponents(generateComponents(-), toDate: date, options: [])
+//    }
+//    
+//    internal var ago: NSDate? {
+//        return before(NSDate())
+//    }
+//}
 //
-
-import Foundation
-
-public extension Int {
-    
-    /**
-        Calls function self times.
-        
-        - parameter function: Function to call
-    */
-    func times <T> (function: Void -> T) {
-        (0..<self).each { _ in function(); return }
-    }
-
-    /**
-        Calls function self times.
-    
-        - parameter function: Function to call
-    */
-    func times (function: Void -> Void) {
-        (0..<self).each { _ in function(); return }
-    }
-
-    /**
-        Calls function self times passing a value from 0 to self on each call.
-    
-        - parameter function: Function to call
-    */
-    func times <T> (function: (Int) -> T) {
-        (0..<self).each { index in function(index); return }
-    }
-
-    /**
-        Checks if a number is even.
-    
-        - returns: true if self is even
-    */
-    func isEven () -> Bool {
-        return (self % 2) == 0
-    }
-    
-    /**
-        Checks if a number is odd.
-    
-        - returns: true if self is odd
-    */
-    func isOdd () -> Bool {
-        return !isEven()
-    }
-
-    /**
-        Iterates function, passing in integer values from self up to and including limit.
-        
-        - parameter limit: Last value to pass
-        - parameter function: Function to invoke
-    */
-    func upTo (limit: Int, function: (Int) -> ()) {
-        if limit < self {
-            return
-        }
-
-        (self...limit).each(function)
-    }
-    
-    /**
-        Iterates function, passing in integer values from self down to and including limit.
-        
-        - parameter limit: Last value to pass
-        - parameter function: Function to invoke
-    */
-    func downTo (limit: Int, function: (Int) -> ()) {
-        if limit > self {
-            return
-        }
-
-        Array(Array(Array(limit...self).reverse())).each(function)
-    }
-
-    /**
-        Clamps self to a specified range.
-    
-        - parameter range: Clamping range
-        - returns: Clamped value
-    */
-    func clamp (range: Range<Int>) -> Int {
-        return clamp(range.startIndex, range.endIndex - 1)
-    }
-    
-    /**
-        Clamps self to a specified range.
-        
-        - parameter min: Lower bound
-        - parameter max: Upper bound
-        - returns: Clamped value
-    */
-    func clamp (min: Int, _ max: Int) -> Int {
-        return Swift.max(min, Swift.min(max, self))
-    }
-
-    /**
-        Checks if self is included a specified range.
-        
-        - parameter range: Range
-        - parameter strict: If true, "<" is used for comparison
-        - returns: true if in range
-    */
-    func isIn (range: Range<Int>, strict: Bool = false) -> Bool {
-        if strict {
-            return range.startIndex < self && self < range.endIndex - 1
-        }
-
-        return range.startIndex <= self && self <= range.endIndex - 1
-    }
-    
-    /**
-        Checks if self is included in a closed interval.
-    
-        - parameter interval: Interval to check
-        - returns: true if in the interval
-    */
-    func isIn (interval: ClosedInterval<Int>) -> Bool {
-        return interval.contains(self)
-    }
-    
-    /**
-        Checks if self is included in an half open interval.
-    
-        - parameter interval: Interval to check
-        - returns: true if in the interval
-    */
-    func isIn (interval: HalfOpenInterval<Int>) -> Bool {
-        return interval.contains(self)
-    }
-    
-    /**
-        Returns an [Int] containing the digits in self.
-        
-        :return: Array of digits
-    */
-    func digits () -> [Int] {
-        var result = [Int]()
-        
-        for char in String(self).characters {
-            let string = String(char)
-            if let toInt = Int(string) {
-                result.append(toInt)
-            }
-        }
-    
-        return result
-    }
-    
-    /**
-        Absolute value.
-    
-        - returns: abs(self)
-    */
-    func abs () -> Int {
-        return Swift.abs(self)
-    }
-    
-    /**
-        Greatest common divisor of self and n.
-    
-        - parameter n:
-        - returns: GCD
-    */
-    func gcd (n: Int) -> Int {
-        return n == 0 ? self : n.gcd(self % n)
-    }
-    
-    /**
-        Least common multiple of self and n
-    
-        - parameter n:
-        - returns: LCM
-    */
-    func lcm (n: Int) -> Int {
-        return (self * n).abs() / gcd(n)
-    }
-    
-    /**
-        Computes the factorial of self
-    
-        - returns: Factorial
-    */
-    func factorial () -> Int {
-        return self == 0 ? 1 : self * (self - 1).factorial()
-    }
-    
-    /**
-        Random integer between min and max (inclusive).
-    
-        - parameter min: Minimum value to return
-        - parameter max: Maximum value to return
-        - returns: Random integer
-    */
-    static func random(min: Int = 0, max: Int) -> Int {
-        return Int(arc4random_uniform(UInt32((max - min) + 1))) + min
-    }
-
-}
-
-/**
-    NSTimeInterval conversion extensions
-*/
-public extension Int {
-
-    var years: NSTimeInterval {
-        return 365 * self.days
-    }
-
-    var year: NSTimeInterval {
-        return self.years
-    }
-
-    var days: NSTimeInterval {
-        return 24 * self.hours
-    }
-
-    var day: NSTimeInterval {
-        return self.days
-    }
-
-    var hours: NSTimeInterval {
-        return 60 * self.minutes
-    }
-
-    var hour: NSTimeInterval {
-        return self.hours
-    }
-
-    var minutes: NSTimeInterval {
-        return 60 * self.seconds
-    }
-
-    var minute: NSTimeInterval {
-        return self.minutes
-    }
-
-    var seconds: NSTimeInterval {
-        return NSTimeInterval(self)
-    }
-
-    var second: NSTimeInterval {
-        return self.seconds
-    }
-
-}
+//public extension Int {
+//    
+//    
+//
+//    /// Check if it is even
+//    ///
+//    /// :return Bool whether int is even
+//    public var isEven: Bool {
+//        get {
+//            return self % 2 == 0
+//        }
+//    }
+//
+//    /// Check if it is odd
+//    ///
+//    /// :return Bool whether int is odd
+//    public var isOdd: Bool {
+//        get {
+//            return self % 2 == 1
+//        }
+//    }
+//
+//    /// Get ASCII character from integer
+//    ///
+//    /// :return Character represented for the given integer
+//    public var char: Character {
+//        get {
+//            return Character(UnicodeScalar(self))
+//        }
+//    }
+//
+//    /// Splits the int into array of digits
+//    ///
+//    /// :return Bool whether int is odd
+//    public func digits() -> [Int] {
+//        var digits: [Int] = []
+//        var selfCopy = self
+//        while selfCopy > 0 {
+//            digits << (selfCopy % 10)
+//            selfCopy = (selfCopy / 10)
+//        }
+//        return Array(digits.reverse())
+//    }
+//
+//    /// Get the next int
+//    ///
+//    /// :return next int
+//    public func next() -> Int {
+//        return self + 1
+//    }
+//    
+//    /// Get the previous int
+//    ///
+//    /// :return previous int
+//    public func prev() -> Int {
+//        return self - 1
+//    }
+//
+//    
+//    /// Invoke the callback from int down to and including limit
+//    ///
+//    /// :params limit the min value to iterate upto
+//    /// :params callback to invoke
+//    public func downTo(limit: Int, callback: () -> ()) {
+//        var selfCopy = self
+//        while selfCopy-- >= limit {
+//            callback()
+//        }
+//    }
+//    
+//    /// Invoke the callback from int down to and including limit passing the index
+//    ///
+//    /// :params limit the min value to iterate upto
+//    /// :params callback to invoke
+//    public func downTo(limit: Int, callback: (Int) -> ()) {
+//        var selfCopy = self
+//        while selfCopy >= limit {
+//            callback(selfCopy--)
+//        }
+//    }
+//
+//    /// GCD metod return greatest common denominator with number passed
+//    ///
+//    /// :param number
+//    /// :return Greatest common denominator
+//    public func gcd(n: Int) -> Int {
+//        return $.gcd(self, n)
+//    }
+//
+//    /// LCM method return least common multiple with number passed
+//    ///
+//    /// :param number
+//    /// :return Least common multiple
+//    public func lcm(n: Int) -> Int {
+//        return $.lcm(self, n)
+//    }
+//
+//    /// Returns random number from 0 upto but not including value of integer
+//    ///
+//    /// :return Random number
+//    public func random() -> Int {
+//        return $.random(self)
+//    }
+//
+//    /// Returns Factorial of integer
+//    ///
+//    /// :return factorial
+//    public func factorial() -> Int {
+//        return $.factorial(self)
+//    }
+//
+//    /// Returns true if i is in closed interval
+//    ///
+//    /// :param i to check if it is in interval
+//    /// :param interval to check in
+//    /// :return true if it is in interval otherwise false
+//    public func isIn(interval: ClosedInterval<Int>) -> Bool {
+//        return $.it(self, isIn: interval)
+//    }
+//
+//    /// Returns true if i is in half open interval
+//    ///
+//    /// :param i to check if it is in interval
+//    /// :param interval to check in
+//    /// :return true if it is in interval otherwise false
+//    public func isIn(interval: HalfOpenInterval<Int>) -> Bool {
+//        return $.it(self, isIn: interval)
+//    }
+//
+//    /// Returns true if i is in range
+//    ///
+//    /// :param i to check if it is in range
+//    /// :param interval to check in
+//    /// :return true if it is in interval otherwise false
+//    public func isIn(interval: Range<Int>) -> Bool {
+//        return $.it(self, isIn: interval)
+//    }
+//  
+//}

@@ -30,3 +30,4 @@ mikenolimits, empathynyc@gmail.com
 ## License
 
 Oatmeal is available under the MIT license. See the LICENSE file for more info.
+

@@ -1,17 +1,15 @@
 import Foundation
 
-public class FileLog : Loggable
+public class FileLog : NSObject,Loggable
 {
     public var location : String
     public var config : Configuration?
     
-    public static var entityName : String?{
-        return "filelog"
-    }
+    public static var entityName : String? = "FileLog"
     public var time : String
     public var type : LogType
     
-	public required init()
+	public required override init()
 	{
         let formatter         = NSDateFormatter()
         formatter.dateStyle   = NSDateFormatterStyle.FullStyle
@@ -19,22 +17,48 @@ public class FileLog : Loggable
         self.time             = formatter.stringFromDate(currentTime)
         self.type             = .Success
         self.location         = "App"
+        super.init()
 	}
 
 	public func write(message:String)
 	{
-        //If file log is disabled we won't try to write to it.
-        if let config = self.config, logEnabled = config.get("LOG_ENABLED") as? Bool where logEnabled == false
+        if let config : Configuration = ~Oats()
         {
+            self.config = config
+        }
+        
+        guard let logLocation = self.config?.get("LOG_LOCATION") as? String else
+        {
+            print("LOG_LOCATION NOT SET!")
             return
         }
         
-		if let log = NSFileHandle(forUpdatingAtPath: self.location), oldText = NSString(data: log.readDataToEndOfFile(), encoding: NSUTF8StringEncoding)
-		{
-            let currentLog   = "\(oldText)[Time: \(time), Type: \(self.type)]: \(message)\n"
-            let absolutePath = NSURL(fileURLWithPath: self.location)
-            let fileHandle   = NSFileHandle(forWritingAtPath: absolutePath.path!)
-            fileHandle?.writeData(currentLog.dataUsingEncoding(NSUTF8StringEncoding)!)
+        self.location     = logLocation
+        
+        print("The log is \(config!.get("LOG_ENABLED"))")
+        
+        //If file log is disabled we won't try to write to it.
+        if let config = self.config, logEnabled = config.get("LOG_ENABLED") as? Bool where logEnabled == false
+        {
+            print(logEnabled)
+            return
+        }
+        let url = NSURL(fileURLWithPath: self.location)
+        do{
+            let log = try NSFileHandle(forUpdatingURL: url)
+        
+            if let oldText = NSString(data: log.readDataToEndOfFile(), encoding: NSUTF8StringEncoding)
+            {
+                let currentLog   = "\(oldText)[Time: \(time), Type: \(self.type)]: \(message)\n"
+                let absolutePath = NSURL(fileURLWithPath: self.location)
+                let fileHandle   = NSFileHandle(forWritingAtPath: absolutePath.path!)
+                fileHandle?.writeData(currentLog.dataUsingEncoding(NSUTF8StringEncoding)!)
+            }
+        }
+        catch(let error)
+        {
+            print(error)
+            print("If the log is currently not working, please check your Settings.Plist file and make sure LOG_LOCATION is set correctly.")
         }
 	}
     
@@ -84,16 +108,10 @@ public class FileLog : Loggable
     */
     public func didResolve()
     {
-        Oats().bindIf({!Oats().has("configuration")},
+        Oats().bindIf({!Oats().has("Configuration")},
             withMember : Configuration.self,
             completion : {}
         )
-        
-        if let logLocation = self.config?.get("LOG_LOCATION") as? String
-        {
-            self.location     = logLocation
-        }
-        
     }
 }
 

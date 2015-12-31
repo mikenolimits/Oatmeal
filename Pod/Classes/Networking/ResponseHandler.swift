@@ -30,8 +30,8 @@ public struct ResponseHandler{
     public var error: ErrorType?
     public var message : String?
     
-    #if !(iOS)
-    public var image : [UInt8]?
+    #if os(OSX)
+    public var image : NSImage?
     #else
     public var image : UIImage?
     #endif

@@ -24,7 +24,7 @@ AlamofireImage is an image component library for Alamofire.
 ## Requirements
 
 - iOS 8.0+ / Mac OS X 10.9+ / tvOS 9.0+ / watchOS 2.0+
-- Xcode 7.1+
+- Xcode 7.2+
 
 ## Migration Guides
 
@@ -347,6 +347,8 @@ downloader.downloadImage(URLRequest: URLRequest) { response in
     }
 }
 ```
+
+> Make sure to keep a strong reference to the `ImageDownloader` instance, otherwise the `completion` closure will not be called because the `downloader` reference will go out of scope before the `completion` closure can be called.
 
 #### Applying an ImageFilter
 

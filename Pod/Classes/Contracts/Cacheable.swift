@@ -10,7 +10,6 @@ import Foundation
 
 public protocol Cacheable : Resolveable{
     
-    func has(key:String)->Bool
-    func get<T:Any>(key: String)->T?
-    func set(key:String,value:AnyObject)
+    func get(key: String,completion:(response: ResponseHandler) -> Void)
+    func set<T:Resolveable>(key:String,value:T)
 }

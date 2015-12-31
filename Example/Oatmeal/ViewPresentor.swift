@@ -13,9 +13,8 @@ import Oatmeal
 class ViewPresentor : ProactiveResolveable
 {
     
-    static var entityName  : String?{
-        return "viewpresentor"
-    }
+    static var entityName  : String? = "viewpresentor"
+    var cache : MemoryCache?
     
     required init()
     {
@@ -73,6 +72,11 @@ class ViewPresentor : ProactiveResolveable
                     print("Got here 2")
                     view.Hello.text  = "And then there was \(name)"
                     view.Hello.alpha = 1
+                }
+                
+                if let github : Github = ~Oats()
+                {
+                    print(github.name)
                 }
             })
         }

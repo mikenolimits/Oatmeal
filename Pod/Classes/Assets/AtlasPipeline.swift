@@ -21,9 +21,7 @@ import SpriteKit
 
 public class AtlasPipeline : ProactiveResolveable
 {
-    public static var entityName : String? {
-        return "assetpipeline"
-    }
+    public static var entityName : String?  = "AtlasPipeline"
     
     public var atlases : [String:SKTextureAtlas]
     
@@ -84,6 +82,7 @@ public class AtlasPipeline : ProactiveResolveable
             completion : {}
         )
     }
+    
     @available(OSX 10.10,iOS 8.0, tvOS 1, *)
     public func create(atlasNamed : String, withImages : [String:AnyObject]) -> SKTextureAtlas
     {

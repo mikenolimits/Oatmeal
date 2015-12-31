@@ -8,22 +8,23 @@
 
 import Foundation
 
-public class Configuration : Resolveable{
+
+public class Configuration : NSObject,Resolveable
+{
 
     var cache : MemoryCache?
     
-    public static var entityName :String?{
-        return "configuration"
-    }
+    public static var entityName :String? = "Configuration"
 
     public var config : [Setting] = [Setting]()
     
-    required public init()
+    required public override init()
     {
         if let cache : MemoryCache = ~Oats(){
             self.cache = cache
         }
-        //self.set("Settings")
+        super.init()
+        self.set("Settings")
     }
     
     public init(location:String)
@@ -32,6 +33,7 @@ public class Configuration : Resolveable{
         {
             self.cache = cache
         }
+        super.init()
         self.set(location)
     }
     
@@ -46,8 +48,12 @@ public class Configuration : Resolveable{
             //Bind the new settings to the Configuration Object
             for(key,value) in plist
             {
-                let newConfig = Setting(name: key as! String,value:value,cached:true)
+                if let key = key as? String{
+                let newConfig = Setting(name: key,value:value,cached:true)
                 config.append(newConfig)
+                //Cache for configuration will be readonly.
+                //self.cache?.set(key, value: newConfig)
+              }
             }
         }
     }
@@ -91,17 +97,19 @@ public class Configuration : Resolveable{
         if(key.containsString("."))
         {
             var CurrentValue  = [String:AnyObject]()
-            var searches      = key.explode(".")
+            var searches      = key.split(".")
             var keyCount      = 1
+
             guard let TopNode = self.config.find({ $0.name == searches.first})?.value as? [String:AnyObject] else
             {
-               return nil
+                return nil
             }
-            searches.removeFirst()
             
-            CurrentValue = TopNode
+               searches.removeFirst()
             
-            for term in searches
+               CurrentValue = TopNode
+            
+               for term in searches
             {
                 if let finalValue = CurrentValue[term] where searches.count <= keyCount
                 {
@@ -118,27 +126,24 @@ public class Configuration : Resolveable{
                 CurrentValue = nextDict
             }
         }
-        
-        /*
-            Is there a case use for caching settings other than to reduce IO reads of pList files?
-        */
-        if let cachedValue : Setting = self.cache?.get(key)
-        {
-            return cachedValue
-        }
-        else if let log : FileLog = ~Oats()
-        {
-            log.error("Cached missed for \(key) or MemoryCache not bound to Container")
-        }
     
         if let setting = self.config.find({ $0.name == key})
         {
             return setting
         }
-        else if let namespace = namespace, setting = self.config.find({$0.name == key && $0.namespace == namespace})
+        else if let namespace = namespace, setting = self.config.find({ $0.name == key && $0.namespace == namespace })
         {
             return setting
         }
+        
+        /*
+            If the current instance of configuration was wiped, we make a last ditch effort to check the cache for the value
+        */
+        if let log : FileLog = ~Oats()
+        {
+            log.error("Cached missed for \(key) or MemoryCache not bound to Container")
+        }
+        
         return nil
     }
 

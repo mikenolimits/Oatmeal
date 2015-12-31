@@ -10,7 +10,8 @@ import UIKit
 import Oatmeal
 import Foundation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController
+{
 
     @IBOutlet weak var Hello: UILabel!
     
@@ -28,9 +29,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //self.setEvents()
-        //self.checkDependencies()
+        self.setEvents()
+        self.checkDependencies()
         
+        if let config : Configuration = ~Oats()
+        {
+            print(config.dependencies())
+            print("It should have loaded into memory.")
+            print(config.get("GameParams.Players.Snake.Wiggle"))
+        }
         
         
         
@@ -52,25 +59,24 @@ class ViewController: UIViewController {
     
     func request(http : Networking)
     {
-        http.done = {
-            handler in
-            print(handler.responseString)
-            if let response = handler.response, username = response["login"].string
-            {
-                print("The username is \(username)")
-            }
-        }
-        let route = Route(baseUrl: "https://api.github.com/users/mikenolimits")
-        
-        http.fire(route)
-        
         
         http.GET("https://api.github.com/repos/mikenolimits/Oatmeal", completion: {
             handler in
             
             if let response = handler.response, github : Github = ~response, events : Events  = ~Oats()
             {
+                github <~> Oats()
+                
+                github.log!.success("Hello!!!")
+
+                if let x  : Github = ~"github"
+                {
+                    print(x.name)
+                    print("The repos name is \(x.name)")
+                }
+                
                 events.fire("setText",payload : ["framework" : github, "view" : self])
+                
             }
         })
         

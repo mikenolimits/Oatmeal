@@ -7,16 +7,17 @@
 //
 
 import Foundation
+import Carlos
+import SwiftyJSON
 
-public class FileCache : Cacheable{
+public class FileCache : NSObject,Cacheable{
     
-    public static var entityName : String?{
-        return "filecache"
-    }
+    public static var entityName : String? = "FileCache"
     
     
-    public required init()
+    public required override init()
     {
+        super.init()
     
     }
     
@@ -24,9 +25,23 @@ public class FileCache : Cacheable{
        - parameter key: The Cache Key representing the file location
        - returns: the resolved cached object
     **/
-    public func get<T:Any>(key: String)->T?
+    public func get(key: String,completion:(response: ResponseHandler) -> Void)
     {
-        return nil
+        let cache   = DiskCacheLevel<String,NSString>()
+        let request = cache.get(key)
+        var handler = ResponseHandler()
+        
+        request.onSuccess { value in
+            handler.response = JSON(value)
+            handler.responseString = value as String
+            handler.success = true
+            completion(response: handler)
+        }
+        request.onFailure { error in
+            handler.success = false
+            handler.error   = error
+            completion(response: handler)
+        }
     }
     
     public func get<T:Modelable>(key:String)->T?
@@ -41,24 +56,14 @@ public class FileCache : Cacheable{
     **/
     
     
-    public func set(key:String,value:AnyObject)
+    public func set<T: Resolveable>(key:String,value:T)
     {
-       
-        
+        let json = value.toJSON()
+        let memoryCache = MemoryCacheLevel<String, NSString>()
+        let string = json.stringValue as NSString
+        memoryCache.set(string, forKey: key)
     }
     
-    
-    
-    /**
-    - parameter key: The Cache Key
-    
-    - returns: Bool if a cached item with the key exists
-    **/
-    
-    public func has(key : String)->Bool
-    {
-        return (self.get(key) !== nil)
-    }
-    
+
     
 }

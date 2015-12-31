@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
         var providers : [ServiceProvider] = [ServiceProvider]()
@@ -27,8 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let Settings : Configuration = ~Oats(){
             Settings.set("Settings")
-            //print(Settings.get("GameParams"))
-            print(Settings.get("GameParams.Players.Snake.Wiggle"))
+            print(Settings.get("LOG_LOCATION"))
+            print("set")
         }
         
         // Override point for customization after application launch.

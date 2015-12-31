@@ -13,4 +13,5 @@ class Owner : Model
 {
     var login : String?
     var avatar_url : String?
+
 }
