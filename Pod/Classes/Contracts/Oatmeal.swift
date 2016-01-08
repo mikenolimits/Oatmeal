@@ -25,5 +25,6 @@ public protocol Oatmeal : Resolveable
     func register(provider:ServiceProvider)
     func register(providers:[ServiceProvider])
     func injectDependencies(obj: Autoresolves)
+    func getDynamicName(name:String) -> String
     func open(any: Any?) -> Any.Type
 }

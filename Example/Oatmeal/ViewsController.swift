@@ -10,7 +10,7 @@ import UIKit
 import Oatmeal
 import Foundation
 
-class ViewController: UIViewController
+class ViewsController: UIViewController
 {
 
     @IBOutlet weak var Hello: UILabel!
@@ -29,14 +29,15 @@ class ViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         self.setEvents()
         self.checkDependencies()
         
-        if let config : Configuration = ~Oats()
+        if let cache : FileCache = ~Oats()
         {
-            print(config.dependencies())
-            print("It should have loaded into memory.")
-            print(config.get("GameParams.Players.Snake.Wiggle"))
+            cache.get("github", completion: {
+                (response:Github) in
+            })
         }
         
         
@@ -59,25 +60,17 @@ class ViewController: UIViewController
     
     func request(http : Networking)
     {
-        
-        http.GET("https://api.github.com/repos/mikenolimits/Oatmeal", completion: {
-            handler in
+        http.GET("https://api.spotify.com/v1/tracks/0eGsygTp906u18L0Oimnem", completion: {
+            (song : Song, success) in
+            print(song.name)
+            print(song.album?.name)
+            print(song.album?.available_markets)
+        })
+    
+        http.GET("https://api.github.com/repos/mikenolimits/Oatmeal", completion:  {
+              (response:Github,success) in
             
-            if let response = handler.response, github : Github = ~response, events : Events  = ~Oats()
-            {
-                github <~> Oats()
-                
-                github.log!.success("Hello!!!")
-
-                if let x  : Github = ~"github"
-                {
-                    print(x.name)
-                    print("The repos name is \(x.name)")
-                }
-                
-                events.fire("setText",payload : ["framework" : github, "view" : self])
-                
-            }
+              print(response.name)
         })
         
     }

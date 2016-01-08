@@ -18,5 +18,10 @@ public class Provider : ServiceProvider
     {
         Oats().register(self)
     }
+    
+    public func registerCustomTypes() -> [Any.Type]
+    {
+        return [Any.Type]()
+    }
 
 }

@@ -51,16 +51,59 @@ public extension Resolveable
         return c
     }
     
+    private func updateJson(var jObject: JSON, key:String, prop : Property) -> JSON
+    {
+        let arrayExpression      = "\\[(.*?)]"
+        let dictionaryExpression = "\\[(.*?):(.*?)]"
+        let stringProp           = String(prop.value)
+        
+        if let _ = stringProp[arrayExpression], value = prop.value as? NSArray
+        {
+            jObject["object"][key].arrayObject = value as [AnyObject]
+        }
+        else if let _ = stringProp[dictionaryExpression], value = prop.value as? NSDictionary,dict = value as? [String : AnyObject]
+        {
+            jObject["object"][key].dictionaryObject = dict
+        }
+        else
+        {
+            jObject["object"][key] = JSON(stringProp)
+        }
+        return jObject
+    }
+    
     public func toJSON() -> JSON
     {
-        let props   = toProps()
+        let props         = toProps()
+        var data          = [String:JSON]()
+        data["className"] = JSON(self.getName())
+        data["object"]    = JSON([String:JSON]())
+        var jObject       = JSON(data)
         
-        var jObject = JSON([String:JSON]())
-        
-        for(key,value) in props
+        for(key,prop) in props
         {
-            jObject[key] = JSON("\(value.value)")
+            if(prop.mirror.displayStyle != .Optional)
+            {
+                jObject =  updateJson(jObject, key: key, prop: prop)
+            }
+            else
+            {
+                //Let's try to unwrap the optional if we can so our json can look right
+                let optionalMirror = Mirror(reflecting: prop.value)
+                
+                if let (_,optionalValue) = optionalMirror.children.first  where optionalMirror.children.count != 0
+                {
+                    prop.value = optionalValue
+                }
+                else
+                {
+                    continue
+                }
+                
+                jObject     =   updateJson(jObject, key: key, prop: prop)
+            }
         }
+        
         
         return jObject
     }
@@ -72,7 +115,6 @@ public extension Resolveable
         {
             return props
         }
-        //A Model has a default init, and this is a requirement if we want to parse the properties
         let reflectedModel       = Mirror(reflecting: self)
         var reflectedProperties  = properties()
         
@@ -109,9 +151,9 @@ public extension Resolveable
         {
             name      = match
             
-            name      = name.stringByReplacingOccurrencesOfString(">",withString: "")
+            name      = name.replace(">",withString: "")
             
-            name      = name.stringByReplacingOccurrencesOfString("<",withString: "")
+            name      = name.replace("<",withString: "")
             
             if Oats().has(name)
             {
@@ -161,7 +203,7 @@ public extension Resolveable
         }
         else
         {
-            name = String(dynamicName).capitalizedString.stringByReplacingOccurrencesOfString(".Type",withString: "")
+            name = String(dynamicName).capitalizedString.replace(".Type",withString: "")
         }
         return name
     }

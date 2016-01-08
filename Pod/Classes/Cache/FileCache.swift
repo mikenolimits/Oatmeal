@@ -27,13 +27,14 @@ public class FileCache : NSObject,Cacheable{
     **/
     public func get(key: String,completion:(response: ResponseHandler) -> Void)
     {
-        let cache   = DiskCacheLevel<String,NSString>()
+        let cache   = DiskCacheLevel<String,NSData>()
         let request = cache.get(key)
         var handler = ResponseHandler()
         
         request.onSuccess { value in
-            handler.response = JSON(value)
-            handler.responseString = value as String
+            let json = JSON(data: value)
+            handler.response = json
+            handler.responseString = json.rawString()
             handler.success = true
             completion(response: handler)
         }
@@ -44,25 +45,21 @@ public class FileCache : NSObject,Cacheable{
         }
     }
     
-    public func get<T:Modelable>(key:String)->T?
-    {
-        return nil
-    }
-    
-    
     /**
       - parameter key: The Cache Key
       - parameter value : The object being cached
     **/
     
-    
     public func set<T: Resolveable>(key:String,value:T)
     {
         let json = value.toJSON()
-        let memoryCache = MemoryCacheLevel<String, NSString>()
-        let string = json.stringValue as NSString
-        memoryCache.set(string, forKey: key)
+        let fileCache = DiskCacheLevel<String, NSData>()
+        if let asString = json.rawString(), encoded = asString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        {
+           fileCache.set(encoded, forKey: key)
+        }
     }
+
     
 
     

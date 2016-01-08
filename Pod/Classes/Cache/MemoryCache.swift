@@ -16,6 +16,8 @@ public class MemoryCache : NSObject,Cacheable{
     
     public static var entityName : String? = "MemoryCache"
     
+    public var linkToDisk = true
+    
     public required override init()
     {
         super.init()
@@ -28,40 +30,37 @@ public class MemoryCache : NSObject,Cacheable{
     public func get(key: String,completion:(response: ResponseHandler) -> Void)
     {
     
-        let memoryCache = MemoryCacheLevel<String, NSString>()
-        let request = memoryCache.get(key)
+        let cache   = MemoryCacheLevel<String,NSData>()
+        let request = cache.get(key)
         var handler = ResponseHandler()
         
         request.onSuccess { value in
-            handler.response = JSON(value)
-            handler.responseString = value as String
-            handler.success = true
+            let json               = JSON(data :value)
+            handler.response       = json
+            handler.responseString = json.rawString()
+            handler.success        = true
             completion(response: handler)
         }
         request.onFailure { error in
             handler.success = false
             handler.error   = error
-            if let logger = self.log {
-                logger.error("Cache missed for \(key)")
-            }
             completion(response: handler)
         }
     }
 
-    
     /**
     - parameter key: The Cache Key
     - parameter value : The object being cached
     **/
     public func set<T: Resolveable>(key:String,value:T)
     {
-        //We will only cache something if it doesn't exist yet or if the cached value has already expired...
-        //1. check the cache expiry time
-        
-        let json = value.toJSON()
-        let memoryCache = MemoryCacheLevel<String, NSString>()
-        let string = json.stringValue as NSString
-        memoryCache.set(string, forKey: key)
+        let json        = value.toJSON()
+        let memoryCache = MemoryCacheLevel<String, NSData>()
+        if let asString = json.rawString(), encoded = asString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        {
+            print("Setting \(asString)")
+            memoryCache.set(encoded, forKey: key)
+        }
     }
     
 

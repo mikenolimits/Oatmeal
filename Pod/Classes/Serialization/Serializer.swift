@@ -1,19 +1,67 @@
-
 import Foundation
 import SwiftyJSON
 
-public class Serializer : Resolveable
+public class Serializer : NSObject,Resolveable
 {
     public static var entityName :String? = "serializer"
     
     public typealias params         = [String:AnyObject]
     public typealias j              = SwiftyJSON.JSON
     
+    public var reflectedProperties : properties = properties()
+    public var castable : [Any.Type?] = [Any.Type?]() {
+        didSet{
+            print(castable,terminator:"\n")
+        }
+}
+    
+    static var arrayMap : [String:Any.Type?]  =
+    [
+        "Optional<Array<String>>" : [String]?.self,
+        "Optional<Array<Int>>" : [Int]?.self,
+        "Optional<Array<NSString>>" : [NSString]?.self,
+        "Optional<Array<Double>>" : [Double]?.self,
+        "Optional<Array<Float>>" : [Float]?.self,
+        "Array<String>"   : [String].self,
+        "Array<NSString>" : [NSString].self,
+        "Array<Int>"      : [Int].self,
+        "Array<Double>"   : [Double].self,
+        "Array<Float>"    : [Float].self,
+        "Array<CGPoint>"  : [CGPoint].self,
+        "Array<CGRect>"   : [CGRect].self,
+        "Array<CGFloat>"  : [CGFloat].self,
+    ]
+    
+    static var dictionaryMap : [String:Any.Type] =
+    [
+        "Dictionary<String, String>"   : [String:String].self,
+        "Dictionary<String, NSString>" : [String:NSString].self,
+        "Dictionary<String, Double>"   : [String:Double].self,
+        "Dictionary<String, Int>"      : [String:Int].self,
+        "Dictionary<String, Float>"    : [String:Float].self,
+        "Dictionary<Int, String>"      : [Int:String].self,
+        "Dictionary<Int, NSString>"    : [Int:NSString].self,
+        "Dictionary<Int, Double>"      : [Int:Double].self,
+        "Dictionary<Int, Int>"         : [Int:Int].self,
+        "Dictionary<Int, Float>"       : [Int:Float].self,
+    ]
+    
+    static var basicMap : [String:Any.Type] =
+    [
+        "String" : String.self,
+        "Int"    : Int.self,
+        "Double" : Double.self,
+        "Float"  : Float.self,
+        "CGFloat": CGFloat.self,
+        "CGPoint": CGPoint.self,
+        "CGRect" : CGRect.self,
+    ]
+    
     //This is really a counter of "how many function calls to parse are you willing to make"
     public var recursiveCalls : Int
     public var recursionLimit : Int
     
-    public required init()
+    public required override init()
     {
        recursiveCalls = 0
        recursionLimit = 10
@@ -55,43 +103,46 @@ public class Serializer : Resolveable
         
         return nil
     }
+    /*
     
-    public func parse(model: Modelable, JSON : j) -> Modelable?
+    */
+    public func parse(model: SerializebleObject, JSON : j) -> SerializebleObject?
     {
-        let reflectedProperties = model.toProps()
-        //var reflectedModels     = properties()
+        reflectedProperties = model.toProps()
         if(recursiveCalls <= recursionLimit)
         {
             //Inject any depedencies from the container including submodels.
+            //This also is done first to rule them out later when checking for dictionaries which also use the object syntax in json
             for (key,prop) in model.dependencies(reflectedProperties)
             {
                 if let resolved = ~key as? NSObject
                 {
                     //Now lets check if the dependency we pulled is actually a model too!
-                    print(resolved)
-                    if let modelableMember = resolved as? Modelable
+                    if let autoresolver = resolved as? SerializebleObject
                     {
                         recursiveCalls++
-                        let replaced = parse(modelableMember, JSON: JSON[prop.label])
+                        let replaced = parse(autoresolver, JSON: JSON[prop.label])
                         model.setValue(replaced, forKey: prop.label)
                     }
                     else
                     {
                        model.setValue(resolved, forKey: prop.label)
                     }
+                    //We already set it lets remove from later loops.
+                    reflectedProperties.removeValueForKey(prop.label)
                 }
             }
-            //Check for any models in layers below
+            //Set properties on everything else
             
             for (key,prop) in reflectedProperties
             {
                 
-                let jValue = JSON[key]
-                let casted = cast(jValue, prop: prop)
-                print(prop.type)
-                
-                if let _ = casted.find({prop.type == $0})
+                let jValue  = JSON[key]
+                cast(jValue, prop: prop)
+                if let type = castable.find({prop.type == $0})
                 {
+                    let typeAsString = String(type).replace("Swift.").replace("Optional").replace(")").replace("(")
+
                     switch(jValue.type)
                     {
                     case .Number:
@@ -109,10 +160,27 @@ public class Serializer : Resolveable
                     case .Bool:
                         model.setValue(jValue.boolValue, forKey: key)
                         
-                    case .Array: break
-                        //model.setValue(jValue.arrayValue, forKey: key)
+                    case .Dictionary:
+                        let arguements = typeAsString.words()
+                        let keyType    = arguements[1]
+                        let valueType  = arguements[2]
+                        let dict = dictionaryFrom(keyType, valueType: valueType, json: jValue)
+                        model.setValue(dict, forKey: key)
                         
+                    case .Array:
+                        let arguements  = typeAsString.words()
+                        let elementType = arguements[1].replace("<").replace(">").replace("Array").replace("Optional")
+                        
+                            $.map(Serializer.basicMap)
+                            {
+                               if($0.0 == elementType)
+                               {
+                                  let array = self.arrayFrom(elementType, json:jValue)
+                                  model.setValue(array, forKey:key)
+                               }
+                            }
                     default:
+                        print("The type is unknown \(jValue.type)")
                         break
                     }
                 }
@@ -121,7 +189,7 @@ public class Serializer : Resolveable
         return model
     }
     
-    public func parse<T:Modelable>(JSON: j)->T?
+    public func parse<T:SerializebleObject>(JSON: j)->T?
     {
         if let model = parse(T.init(), JSON: JSON) as? T
         {
@@ -131,19 +199,48 @@ public class Serializer : Resolveable
         }
         return nil
     }
+    
+    public func arrayFrom(type:String, json: JSON) -> [AnyObject]
+    {
+        let array = NSMutableArray()
         
-    public func serialize<T:Modelable>(json:params)->T?
+        $.map(json.arrayValue)
+        {
+            array.addObject($0.rawValue)
+        }
+        
+        if let result =  array.copy() as? [AnyObject]
+        {
+            return result
+        }
+        return [AnyObject]()
+    }
+
+    
+    public func dictionaryFrom(keyType:String, valueType: String, json: JSON) -> AnyObject
+    {
+        let dict = NSMutableDictionary()
+        
+        $.map(json.dictionaryValue)
+        {
+            dict.setValue($0.1.rawValue, forKey: $0.0)
+        }
+        
+        return dict
+    }
+    
+    public func serialize<T:SerializebleObject>(json:params)->T?
     {
         let json = j(json)
         return self.parse(json)
     }
     
-    public func serialize<T:Modelable>(json:j)->T?
+    public func serialize<T:SerializebleObject>(json:j)->T?
     {
         return self.parse(json)
     }
     
-    public func serialize<T:Modelable>(json:String)->T?
+    public func serialize<T:SerializebleObject>(json:String)->T?
     {
         guard let dataFromString = json.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) else
         {
@@ -157,76 +254,56 @@ public class Serializer : Resolveable
     
     
     /*
-    Will return all the types we can possibly cast the JSON value to.
+       Will return all the types we can possibly cast the JSON value to.
     */
     func cast(uncasted: JSON, prop: Property) -> [Any.Type?]
     {
-        var castable = [Any.Type?]()
         switch(uncasted.type)
         {
-        case .Number,.String:
-            castable = parseNumber(uncasted, castable: castable)
-            castable = parseString(uncasted, castable: castable)
-        case .Array:
-            castable = parseArray(uncasted, castable: castable, prop: prop)
-        default: break
+          case .String,.Number,.Bool:
+           parseNumber(uncasted)
+           parseString(uncasted)
+          case .Array:
+           parseArray(uncasted, prop: prop)
+          case .Dictionary:
+           parseDictionary(uncasted, prop: prop)
+        default:
+            break
         }
-        /*
-        for T : Any.Type in castable
-        {
-        let opt : T = nil
-        let type = Mirror(reflecting: opt)
-        castable.append(opt.dynamicType)
-        }
-        */
+
         return castable
     }
-   
-    func parseArray(uncasted: JSON, var castable:[Any.Type?], prop: Property) -> [Any.Type?]
-    {
-        for (_,value) in uncasted
-        {
-            if let asString = value.string where asString != ""
-            {
-                castable.append([String].self)
-                castable.append([NSString].self)
-            }
-            if let _ = uncasted.double
-            {
-                castable.append(open([Double].self))
-                castable.append([Double].self)
-            }
-            if let _ = uncasted.float
-            {
-                castable.append(open([Float]?))
-                castable.append([Float].self)
-            }
-            if let _ = uncasted.int16
-            {
-                castable.append(open([Int16]?))
-                castable.append([Int16].self)
-            }
-            if let _ = uncasted.int32
-            {
-                castable.append([Int32].self)
-            }
-            if let _ = uncasted.int64
-            {
-                castable.append([Int64].self)
-            }
-            if let _ = uncasted.int
-            {
-                castable.append([Int?].self)
-                castable.append([Int].self)
-            }
-            
-        }
     
+    func parseDictionary(uncasted: JSON, prop: Property) -> [Any.Type?]
+    {
+        let type = String(prop.type)
+        $.map(Serializer.dictionaryMap)
+        {
+            if(type.containsString($0.0))
+            {
+                self.castable.append($0.1)
+            }
+        }
+        
         return castable
         
     }
+   
+    func parseArray(uncasted: JSON, prop: Property) -> [Any.Type?]
+    {
+        let type = String(prop.type)
+        $.map(Serializer.arrayMap)
+        {
+          if(type == $0.0)
+          {
+             self.castable.append($0.1)
+          }
+        }
     
-    func parseString(uncasted: JSON, var castable:[Any.Type?]) -> [Any.Type?]
+        return castable
+    }
+    
+    func parseString(uncasted: JSON) -> [Any.Type?]
     {
         if let _ = uncasted.string
         {
@@ -237,7 +314,7 @@ public class Serializer : Resolveable
         return castable
     }
     
-    func parseNumber(uncasted: JSON, var castable:[Any.Type?]) -> [Any.Type?]
+    func parseNumber(uncasted: JSON) -> [Any.Type?]
     {
         
         if let _ = uncasted.double

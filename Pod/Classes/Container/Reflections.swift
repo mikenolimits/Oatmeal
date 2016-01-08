@@ -45,6 +45,22 @@ public class Reflections : Resolveable
         return nil
     }
     
+    static func getBundleName(member : Resolveable? = nil) -> String
+    {
+        var bundleName = NSBundle.mainBundle()
+        
+        if let m = member as? AnyObject
+        {
+            bundleName = NSBundle(forClass: m.dynamicType)
+        }
+        
+        let name = String(bundleName.infoDictionary?["CFBundleName"])
+        
+        return name
+            .replace(" ", withString: "_")
+            .replace("-", withString: "_")
+    }
+    
     public func set(key:String, value : properties)
     {
         mirrors[key] = value

@@ -7,30 +7,21 @@
 //
 
 import Foundation
-/*
+import SwiftyJSON
+import Carlos
 
-extension Cache : Pipeable{
-    
-    var name : String{
-        get{
-            return "Cache"
-        }
-        set{
-          //
-        }
-    }
-    
-    func getName()->String{
-        return self.name
-    }
-    
-    func setName(name:String){
-        self.name =  name
-    }
-    
-    func isPipeReadyForMiddleware()->Bool{
-        return true
+public extension Cacheable
+{
+    public func get<T:SerializebleObject>(key:String,completion:(response: T) -> Void)
+    {
+        self.get(key, completion: {
+            handler in
+            
+            if let data = handler.response, model : T = ~data["object"]
+            {
+                    completion(response:model)
+            }
+        })
     }
 }
-*/
 

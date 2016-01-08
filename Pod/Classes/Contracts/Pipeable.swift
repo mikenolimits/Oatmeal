@@ -9,6 +9,10 @@
 import Foundation
 
 
+public protocol Initable {
+    init()
+}
+
 public protocol Pipeable
 {
     var name : String { get set}

@@ -76,6 +76,14 @@ public struct Route{
             mutableURLRequest  = NSMutableURLRequest(URL: URL)
         }
         
+        if let headers = self.headers
+        {
+            for(key,value) in headers
+            {
+                mutableURLRequest.addValue(value, forHTTPHeaderField: key)
+            }
+            
+        }
         mutableURLRequest.HTTPMethod = method.rawValue
         
         return encoding.encode(mutableURLRequest, parameters: parameters).0

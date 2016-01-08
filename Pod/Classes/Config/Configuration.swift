@@ -18,6 +18,8 @@ public class Configuration : NSObject,Resolveable
 
     public var config : [Setting] = [Setting]()
     
+    public var cacheSettingFile = true
+    
     required public override init()
     {
         if let cache : MemoryCache = ~Oats(){
@@ -37,22 +39,39 @@ public class Configuration : NSObject,Resolveable
         self.set(location)
     }
     
+    public subscript(key : String) -> Setting?{
+        get{
+            return self.find(key)
+        }
+        set(newProp)
+        {
+            if let value = newProp
+            {
+                self.config.append(value)
+            }
+        }
+    }
+    
     /**
         - parameter plist: the name of the pList file in the bundle
     **/
 
-    public func set(plist : String)
+    public func set(plistName : String)
     {
-        if let path = NSBundle.mainBundle().pathForResource(plist, ofType: "plist"), plist = NSDictionary(contentsOfFile: path)
+        if let path = NSBundle.mainBundle().pathForResource(plistName, ofType: "plist"), plist = NSDictionary(contentsOfFile: path)
         {
             //Bind the new settings to the Configuration Object
             for(key,value) in plist
             {
-                if let key = key as? String{
-                let newConfig = Setting(name: key,value:value,cached:true)
-                config.append(newConfig)
-                //Cache for configuration will be readonly.
-                //self.cache?.set(key, value: newConfig)
+                 if let key = key as? String
+                 {
+                 let newConfig = Setting(name: key,value:value,cached:cacheSettingFile, namespace: plistName)
+                 config.append(newConfig)
+                 //Cache for configuration will be readonly.
+                 if(cacheSettingFile)
+                 {
+                    self.cache?.set("Setting.\(key)", value: newConfig)
+                 }
               }
             }
         }
@@ -69,6 +88,7 @@ public class Configuration : NSObject,Resolveable
         let newConfig = Setting(name: key,value:value,cached:cached)
         self.config.append(newConfig)
     }
+    
     
     /**
     - parameter key: The configuration Key
@@ -127,11 +147,11 @@ public class Configuration : NSObject,Resolveable
             }
         }
     
-        if let setting = self.config.find({ $0.name == key})
+        if let namespace = namespace, setting = self.config.find({ $0.name == key && $0.namespace == namespace })
         {
             return setting
         }
-        else if let namespace = namespace, setting = self.config.find({ $0.name == key && $0.namespace == namespace })
+        else if let setting = self.config.find({ $0.name == key})
         {
             return setting
         }

@@ -8,6 +8,7 @@
 
 import Foundation
 import Oatmeal
+import SpriteKit
 
 final class OatmealServiceProvider : ServiceProvider
 {
@@ -26,6 +27,17 @@ final class OatmealServiceProvider : ServiceProvider
         Serializer.self,
         Reflections.self,
         Owner.self,
-        Github.self
+        Github.self,
+        Person.self,
+        Song.self,
+        Album.self
     ]
+    
+    func registerCustomTypes() -> [Any.Type]
+    {
+        return [
+            SKSpriteNode.self
+        ]
+    }
+
 }

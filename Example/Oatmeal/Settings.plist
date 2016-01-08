@@ -29,7 +29,7 @@
 		</dict>
 	</dict>
 	<key>LOG_LOCATION</key>
-	<string>/Users/michaelkantor/AppcodProjects/OatmealFramework/Example/Oatmeal/App.txt</string>
+	<string>/Users/michaelkantor/AppcodProjects/Oatmeal/Example/Oatmeal/App.txt</string>
 	<key>LOG_HTTP</key>
 	<true/>
 	<key>LOG_ENABLED</key>

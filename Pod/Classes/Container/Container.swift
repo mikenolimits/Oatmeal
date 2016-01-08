@@ -13,15 +13,20 @@ public class Container : Oatmeal
     /* 
        Singletons bound to the app always need a reference
     */
-    public var singletons :  [Resolveable] = [Events(),Reflections()]
+    public var singletons :  [Resolveable] = [
+        Events(),Reflections()
+    ]
     
     /*
        Lazy members bound to the app do not need a reference, and will be deinitlized 
        whenever they are no longer needed.
     */
     private var members: [String:Resolveable.Type] = [String: Resolveable.Type]() {
-        didSet {
-            print(members, terminator: "\n")
+        didSet
+        {
+            #if debug
+                print(members, terminator: "\n")
+            #endif
         }
     }
 
@@ -51,26 +56,27 @@ public class Container : Oatmeal
     
 
     /*
-       First we will check if the user provided an entityName, if they did, we will
-       Use it. Otherwise we will get the name of the class instead.
+       First we will check if the user provided an entityName, if they did, we will use it. Otherwise we will get the name of the class instead.
+       If the object autoresolves, then we will check if a custom entityName is provided as autoresolves do not have a static one, and they might be stored as singletons later with custom keys.
     */
-    
     public func get<O : Resolveable>() -> O?
     {
         guard let name = O.entityName else
         { 
-            let name = String(O).lowercaseString
+            let name = getDynamicName(String(O))
            
             return self.get(name) as? O
         }
-        
-        //are we certain this member exists?
+        if let auto = O() as? Autoresolveable where auto.customEntityName != ""
+        {
+            return self.get(auto.customEntityName) as? O
+        }
         return self.get(name) as? O
     }
     
     /*
-      First we will check for a framework bound member because it will be most common
-      Second we we will check for user bound members.
+      First we will check for a framework bound members because it will be most common
+      Second we we will check singletons
     */
     public func get(key:String)->Resolveable?
     {
@@ -90,8 +96,6 @@ public class Container : Oatmeal
         }
         else
         {
-            print(ContainerException.DoesntExist(key: key).err)
-
             return nil
         }
     }
@@ -107,7 +111,7 @@ public class Container : Oatmeal
         {
             return (get(entityName) != nil)
         }
-        let dynamicName = "\(key.init().dynamicType)"
+        let dynamicName = getDynamicName(String(key.init().dynamicType))
         
         return (get(dynamicName) != nil)
     }
@@ -129,14 +133,13 @@ public class Container : Oatmeal
     
     public func bind(member: Resolveable)
     {
-       
-        
         //Now that we have both the type and a reference to the class,
         //We can initialize it whenever its needed.
         let entity = member.dynamicType
         
-        guard let name = member.dynamicType.entityName else{
-            let dynamicName = "\(entity)".capitalizedString.stringByReplacingOccurrencesOfString(".Type",withString: "")
+        guard let name = member.dynamicType.entityName else
+        {
+            let dynamicName = getDynamicName(String(entity))
             self.members[dynamicName] = entity
             return
         }
@@ -174,6 +177,11 @@ public class Container : Oatmeal
         }
     }
     
+    public func getDynamicName(name:String) -> String
+    {
+        return name.capitalizedString.replace(".Type",withString: "")
+    }
+    
     public func register(provider: ServiceProvider)
     {
         for i in provider.provides
@@ -184,8 +192,8 @@ public class Container : Oatmeal
             }
             else
             {
-                let name = "\(i.dynamicType)".capitalizedString.stringByReplacingOccurrencesOfString(".Type",withString: "")
-                members["\(name)"] = i
+                let name = getDynamicName(String(i.dynamicType))
+                members[name] = i
             }
         }
 
@@ -195,9 +203,9 @@ public class Container : Oatmeal
     {
         for (key,prop) in obj.dependencies()
         {
-            if let resolved = ~key as? NSObject
+            if let autoresolvable = obj as? Autoresolveable, resolved = ~key as? NSObject
             {
-                obj.setValue(resolved, forKey: prop.label)
+                autoresolvable.setValue(resolved, forKey: prop.label)
             }
         }
     }
@@ -209,6 +217,7 @@ public class Container : Oatmeal
         
         if let children = AnyRandomAccessCollection(mi.children)
         {
+            if mi.children.count == 0 { return NullElement.self }
             for (_, value) in children
             {
                 return value.dynamicType

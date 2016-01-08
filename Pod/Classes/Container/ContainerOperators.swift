@@ -7,6 +7,7 @@
 //
 import SwiftyJSON
 
+
 prefix operator ~{}
 infix operator <~>{associativity left precedence 140}
 
@@ -20,7 +21,7 @@ public prefix func ~(key: String) -> Resolveable?
     return Oats().get(key)
 }
 
-public prefix func ~<T: Modelable>(json : JSON) -> T?
+public prefix func ~<T: SerializebleObject>(json : JSON) -> T?
 {
     if let Serializer : Serializer = ~Container.App, model : T =  Serializer.serialize(json)
     {
@@ -29,7 +30,7 @@ public prefix func ~<T: Modelable>(json : JSON) -> T?
     return nil
 }
 
-public prefix func ~<T: Modelable>(json : String) -> T? {
+public prefix func ~<T: SerializebleObject>(json : String) -> T? {
     if let Serializer : Serializer = ~Container.App, model : T =  Serializer.serialize(json){
         return model
     }
@@ -62,7 +63,7 @@ public func ~><T: Events>(events: T?, eventName: String)
     }
 }
 
-public func ~><T: Modelable>(inout left: T, json: String)->T?{
+public func ~><T: SerializebleObject>(inout left: T, json: String)->T?{
     //Models use the same function signature as Resolveables, which can cause confusion when attempting to toss them into the IoC. We fix this by using the protocol method
     if left.bindsToContainer()
     {
@@ -74,7 +75,7 @@ public func ~><T: Modelable>(inout left: T, json: String)->T?{
     return nil
 }
 
-public func ~><T: Modelable>(var left: T, json: JSON)->T?{
+public func ~><T: SerializebleObject>(var left: T, json: JSON)->T?{
     //Models use the same function signature as Resolveables, which can cause confusion when attempting to toss them into the IoC. We fix this by using the protocol method
     if left.bindsToContainer()
     {

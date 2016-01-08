@@ -183,8 +183,8 @@ struct RegexHelper {
     
 }
 
-let r = Regex(pattern :"<(.*?)>")
-let word = "Optional<Hello>"
+let r = Regex(pattern :"((.*?))")
+let word = "Optional(\"Hello\")"
 let range = r.rangeOfFirstMatch("Optional<Hello>").toRange()
 let start = word.startIndex.advancedBy(range!.startIndex)
 let end = word.startIndex.advancedBy(range!.endIndex)
@@ -267,6 +267,9 @@ class hangman{
 class game : SerializebleObject
 {
     var man : hangman?
+    var a : [String]?
+    var b : [String] = [String]()
+    var num : Int64?
     
     required init()
     {
@@ -277,16 +280,19 @@ class game : SerializebleObject
         fatalError("init(coder:) has not been implemented")
     }
 }
-let sup = class_getSuperclass(game)
-String.
-
+let num = NSNumber(integer: 10)
 let g = game()
+//g.setValue(num, forKeyPath: "num")
 
 let p = toProps(g)
+let aArray = p["a"]?.mirror
+let bArray = p["b"]?.mirror
+print(aArray?.subjectType)
+print(bArray?.subjectType)
+print(p["a"]?.type)
+print(p["b"]?.type)
 
-for (key,value ) in p
-{
-    print(key)
-    print(value.type)
-}
+let s = String([String]?.self)
+print([String]?.self)
+print(s)
     

@@ -74,13 +74,8 @@ import Foundation
     - parameter global: Defines if the event should be accessible from any part of the application
     - parameter handler : the closure or method that should be executed when the event is fired
     
-        Generic method for binding a method to the IoC
+        Generic method for binding an event to the IoC
     **/
-
-    
-    /*
-    Bind a new event to the IoC
-    */
     public func listenFor(event : String, global : Bool = true, handler : (event : Event) -> Void){
         
         let e  = Event(name : event)
@@ -130,7 +125,7 @@ import Foundation
         
     }
     
-    func getNamespace()->String?
+    public func getNamespace()->String?
     {
         let current              = Controller.getCurrentController()
         let className            = Mirror(reflecting: current).subjectType
@@ -149,12 +144,13 @@ import Foundation
                e.data = data
             }
             
-            e.callback?(event: e)
+            e.handle()
             
             return (true,e)
         }
-        
-        print("Event \(event) Does Not Exist.", terminator: "")
+        #if debug
+           print("Event \(event) Does Not Exist.", terminator: "")
+        #endif
         
         return (false,nil)
 }

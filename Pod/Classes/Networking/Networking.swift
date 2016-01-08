@@ -13,24 +13,47 @@ import SwiftyJSON
 
 public typealias completion  = (response: ResponseHandler) -> Void
 
-public class Networking : Resolveable
+public class Networking : NSObject,Resolveable
 {
     public static var entityName : String? = "Networking"
     
-    public var manager  : Alamofire.Manager
-
     public var done  : completion?
     public var error : completion?
+    var manager : Alamofire.Manager
     
-    public required init()
+    public var headers : [String:String]
+    
+    var pendingRequest : Bool = false
+    
+    public var requestCap : Int      = 20
+    public var currentRequests : Int = 0
+    
+    
+    public required override init()
     {
         self.manager = Alamofire.Manager()
-        self.manager.startRequestsImmediately = true
-        
+        headers = [String:String]()
+    }
+    
+    public func setHeader(key:String,value:String)
+    {
+        headers[key] = value
+    }
+    
+    public subscript(key : String) -> String
+    {
+        get{
+            return self.headers[key] ?? ""
+        }
+        set(newValue)
+        {
+            self.headers[key] = newValue
+        }
     }
     
     func fireAs(method: Alamofire.Method,url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: ResponseHandler) -> Void )
     {
+        
         let requestType : RequestType = type ?? .ShouldSendUrlAndReturnJson
         
         var route = Route(method: method, baseUrl: url, endpoint: nil, type: requestType)
@@ -56,14 +79,30 @@ public class Networking : Resolveable
     }
 
     
-    public func fire(route : Route, completion:(response: ResponseHandler) -> Void)
+    public func fire(var route : Route, completion:(response: ResponseHandler) -> Void)
     {
+        //Networking is meant as a one track lane, but if the developer puts two cars in the lane, we'll create a fork in the road to let the other in
+        if(currentRequests >= requestCap)
+        {
+            NSThread.sleepForTimeInterval(1)
+        }
+        if(pendingRequest)
+        {            
+            if let networking : Networking = ~Oats()
+            {
+                self.currentRequests++
+                networking.fire(route, completion: completion)
+            }
+        }
+        else
+        {
         //First we create the context of the request
         //Allowing for the developer to have full control over the request
+        self.pendingRequest = true
         
         if let config  = route.customConfiguration
         {
-            self.manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: nil)
+            manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: nil)
         }
         else
         {
@@ -71,7 +110,12 @@ public class Networking : Resolveable
             config.timeoutIntervalForResource = 600
             config.HTTPAdditionalHeaders      = Manager.defaultHTTPHeaders
             
-            self.manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: route.sslPolicy)
+            manager = Alamofire.Manager(configuration: config, serverTrustPolicyManager: route.sslPolicy)
+        }
+            
+        if(headers.count >= 1)
+        {
+           route.headers = headers
         }
         
         switch(route.type)
@@ -81,16 +125,20 @@ public class Networking : Resolveable
             manager.request(route.compose()).responseJSON { result in
                 var handler = self.getHandler(result.response,result: result.result)
                 handler     = self.adjustToExpectation(route, handler: handler)
+                self.pendingRequest = false
+                self.currentRequests--
                 completion(response: handler)
             }
         case .ShouldSendJsonAndReturnString,.ShouldSendUrlAndReturnString:
             manager.request(route.compose()).responseString{ result in
                 var handler = self.getHandler(result.response,result: result.result)
                 handler     = self.adjustToExpectation(route, handler: handler)
-                
+                self.pendingRequest = false
+                 self.currentRequests--
                 completion(response: handler)
             }
          }
+        }
         }
         
         func adjustToExpectation(route:Route, var handler:ResponseHandler)->ResponseHandler
@@ -149,22 +197,15 @@ public class Networking : Resolveable
         case .Success(let data):
             /* parse your json here with swiftyjson */
             
-            print(data)
             handler.response       = SwiftyJSON.JSON(data)
             handler.responseString = String(data)
             handler.headers        = response?.allHeaderFields
-            print(result.error?.description)
             
         case .Failure(let error):
             handler.message = "Request failed with error: \(error)"
             handler.error   = error
-            
-        
-            //handler.responseString =  ("\(NSString(data: error.domain, encoding: NSUTF8StringEncoding)!)")
-            handler.response       = SwiftyJSON.JSON(error.description)
+            handler.response  = SwiftyJSON.JSON(error.description)
             handler.success = false
-
-        
         }
         handler.headers    = response?.allHeaderFields
         handler.statusCode = response?.statusCode
@@ -173,10 +214,20 @@ public class Networking : Resolveable
 }
 
 
-extension Networking{
+extension Networking
+{
     public func GET(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: ResponseHandler) -> Void)
     {
         return fireAs(.GET, url: url, type: type, parameters: parameters,completion: completion)
+    }
+    
+    public func GET<T:SerializebleObject>(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: T, success : Bool) -> Void)
+    {
+        self.GET(url, type: type, parameters: parameters,completion: {
+            handler in
+            
+            self.serializeResponse(handler , completion: completion)
+        })
     }
     
     public func PUT(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: ResponseHandler) -> Void)
@@ -184,9 +235,32 @@ extension Networking{
         return fireAs(.PUT, url: url, type: type, parameters: parameters,completion: completion)
     }
     
+    public func PUT<T:SerializebleObject>(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: T, success : Bool) -> Void)
+    {
+        self.PUT(url, type: type, parameters: parameters,completion: {
+            handler in
+            
+            self.serializeResponse(handler , completion: completion)
+        })
+    }
+    
     public func POST(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: ResponseHandler) -> Void)
     {
         return fireAs(.PUT, url: url, type: type, parameters: parameters,completion: completion)
+    }
+    
+    public func POST<T:SerializebleObject>(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion : (response: T, success : Bool)-> Void)
+    {
+        self.POST(url, type: type, parameters: parameters,completion: {
+            handler in
+            
+            self.serializeResponse(handler , completion: completion)
+        })
+    }
+    
+    public func DELETE(url:String, type: RequestType? = nil, parameters : [String:String]? = nil,completion:(response: ResponseHandler) -> Void)
+    {
+        return fireAs(.DELETE, url: url, type: type, parameters: parameters,completion: completion)
     }
 
     public func DOWNLOAD(image:String,completion:(response: ResponseHandler) -> Void)
@@ -198,12 +272,22 @@ extension Networking{
             let request    = NSURLRequest(URL:url)
             downloader.downloadImage(URLRequest: request, completion: { result in
                 
-                handler.image = result.result.value
+                handler.image    = result.result.value
                 handler.success  = result.result.isSuccess
                 completion(response: handler)
             })
         }
-        
     }
-
+    
+    func serializeResponse<T:SerializebleObject>(handler : ResponseHandler, completion:(response: T, success : Bool) -> Void)
+    {
+        if let data = handler.response, model : T = ~data
+        {
+            completion(response:model, success: true)
+        }
+        else
+        {
+            completion (response: T(), success: false)
+        }
+    }
 }

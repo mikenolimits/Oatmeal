@@ -12,4 +12,8 @@ final class AppServiceProvider : ServiceProvider{
     
     var provides : [Resolveable.Type] = []
     
+    func registerCustomTypes() -> [Any.Type] {
+        return [String.self]
+    }
+    
 }

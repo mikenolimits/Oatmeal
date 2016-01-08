@@ -25,20 +25,12 @@ public class Property : SerializebleObject
         super.init()
     }
 
-    public required init() {
+    public required init()
+    {
         self.mirror  = Mirror(reflecting : "emptyValue")
         self.label   = "emptyMirror"
         self.value   = "emptyValue"
         self.type    =  String.self
         super.init()
-    }
-    
-
-    required public init?(coder aDecoder: NSCoder) {
-        self.mirror  = Mirror(reflecting : "emptyValue")
-        self.label   = "emptyMirror"
-        self.value   = "emptyValue"
-        self.type    =  String.self
-        super.init(coder: aDecoder)
     }
 }

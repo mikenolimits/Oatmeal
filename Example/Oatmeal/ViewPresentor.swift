@@ -21,7 +21,7 @@ class ViewPresentor : ProactiveResolveable
         
     }
     
-    func render(controller : ViewController)
+    func render(controller : ViewsController)
     {
         UIView.animateWithDuration(5.5, delay: 1.0, options: UIViewAnimationOptions.CurveEaseIn,
             animations: {
@@ -58,7 +58,7 @@ class ViewPresentor : ProactiveResolveable
             events.listenFor("sayHello", global: true, handler: {
                 event in
                 
-                if let data = event.data, view = data["view"] as? ViewController
+                if let data = event.data, view = data["view"] as? ViewsController
                 {
                     self.render(view)
                 }
@@ -67,7 +67,7 @@ class ViewPresentor : ProactiveResolveable
             events.listenFor("setText", global: true, handler: {
                 event in
                 
-                if let data = event.data, view = data["view"] as? ViewController, framework = data["framework"] as? Github, name = framework.name
+                if let data = event.data, view = data["view"] as? ViewsController, framework = data["framework"] as? Github, name = framework.name
                 {
                     print("Got here 2")
                     view.Hello.text  = "And then there was \(name)"
@@ -88,3 +88,4 @@ class ViewPresentor : ProactiveResolveable
        
     }
 }
+

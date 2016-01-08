@@ -8,13 +8,14 @@
 
 import Foundation
 
-public class Model : SerializebleObject,Modelable{
+public class Model : SerializebleObject,Modelable,Autoresolves{
     
     public var events   : Events?
     // the unique id representing the model
     public var id       : Int?
     public var reloaded : Bool
     public var maxPages : Int
+    public var customEntityName : String = "Model.*"
     
     public var route : Route?
     typealias Prepared = (Model: Model) -> Void
@@ -87,10 +88,6 @@ public class Model : SerializebleObject,Modelable{
         
         reloadModel()
     }
-
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     public func setEvents()
     {
@@ -125,10 +122,6 @@ public class Model : SerializebleObject,Modelable{
     {
         //fatalError("This method must be overriden")
         return self.init()
-    }
-    
-    public func bindsToContainer() -> Bool {
-        return false
     }
     
     

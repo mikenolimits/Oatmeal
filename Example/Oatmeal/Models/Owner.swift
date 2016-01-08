@@ -9,7 +9,7 @@
 import Foundation
 import Oatmeal
 
-class Owner : Model
+class Owner : SerializebleObject
 {
     var login : String?
     var avatar_url : String?

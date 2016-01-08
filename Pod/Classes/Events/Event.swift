@@ -22,9 +22,12 @@ public class Event {
     
     public let reoccuring     : Bool
     
+    public var fired          : Int
+    
     public func handle()
     {    
         lastFiredAt = Int(NSDate().timeIntervalSince1970)
+        fired++
         callback!(event: self)
     }
     
@@ -32,6 +35,7 @@ public class Event {
         self.name            = name
         self.reoccuring      = isReoccuring
         self.namespace       = namespace
+        self.fired           = 0
     }
     
 }

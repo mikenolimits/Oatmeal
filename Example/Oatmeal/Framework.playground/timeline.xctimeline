@@ -3,7 +3,22 @@
    version = "3.0">
    <TimelineItems>
       <LoggerValueHistoryTimelineItem
-         documentLocation = "#CharacterRangeLen=3&amp;CharacterRangeLoc=8654&amp;EndingColumnNumber=8&amp;EndingLineNumber=280&amp;StartingColumnNumber=5&amp;StartingLineNumber=279&amp;Timestamp=473034080.564194"
+         documentLocation = "#CharacterRangeLen=0&amp;CharacterRangeLoc=8813&amp;EndingColumnNumber=8&amp;EndingLineNumber=284&amp;StartingColumnNumber=5&amp;StartingLineNumber=284&amp;Timestamp=473840261.354489"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "#CharacterRangeLen=1&amp;CharacterRangeLoc=8820&amp;EndingColumnNumber=6&amp;EndingLineNumber=287&amp;StartingColumnNumber=5&amp;StartingLineNumber=287&amp;Timestamp=473840261.354717"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "#CharacterRangeLen=6&amp;CharacterRangeLoc=8839&amp;EndingColumnNumber=11&amp;EndingLineNumber=288&amp;StartingColumnNumber=5&amp;StartingLineNumber=287&amp;Timestamp=473840261.354836"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "file:///Users/michaelkantor/AppcodProjects/Oatmeal/Example/Oatmeal/Framework.playground#CharacterRangeLen=35&amp;CharacterRangeLoc=8779&amp;EndingLineNumber=284&amp;StartingLineNumber=284&amp;Timestamp=473840261.354946"
          selectedRepresentationIndex = "0"
          shouldTrackSuperviewWidth = "NO">
       </LoggerValueHistoryTimelineItem>

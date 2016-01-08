@@ -19,7 +19,8 @@ import SwiftyJSON
     import WatchKit
 #endif
 
-public struct ResponseHandler{
+public struct ResponseHandler
+{
     public var success = false
     public var response: SwiftyJSON.JSON?
     public var responseString : String?
@@ -29,6 +30,7 @@ public struct ResponseHandler{
     public var cookies :[String : String]?
     public var error: ErrorType?
     public var message : String?
+    public var events : Events? = ~Oats()
     
     #if os(OSX)
     public var image : NSImage?

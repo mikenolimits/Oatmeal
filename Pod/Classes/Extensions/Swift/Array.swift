@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public extension Array {
     
@@ -269,6 +270,40 @@ public func <<<T>(inout left: [T], right: [T]) -> [T] {
 /// :return array with the elements from second array removed
 public func -<T: Hashable>(left: [T], right: [T]) -> [T] {
     return $.difference(left, right)
+}
+
+
+public extension Array{
+    /**
+     Initialize an array based on a json string
+     
+     :parameter: json The json string
+     
+     :returns: The array of objects
+     */
+    
+    /**
+     Get the type of the object where this array is for
+     
+     :parameter: arr this array
+     
+     :returns: The object type
+     */
+    public func getArrayTypeInstance<T>(arr:Array<T>) -> T {
+        return arr.getTypeInstance()
+    }
+    
+    /**
+     Get the type of the object where this array is for
+     
+     :returns: The object type
+     */
+    public func getTypeInstance<T>(
+        ) -> T {
+            let nsobjectype : NSObject.Type = T.self as! NSObject.Type
+            let nsobject: NSObject = nsobjectype.init()
+            return nsobject as! T
+    }
 }
 
 

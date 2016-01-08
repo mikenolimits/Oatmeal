@@ -176,7 +176,34 @@ public extension String {
             return nil
         }
     }
+    
+    func replace(target: String, withString: String = "", literal: Bool = false) -> String
+    {
+        if(literal)
+        
+        {
+            return self.stringByReplacingOccurrencesOfString(target, withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        }
+        return self.stringByReplacingOccurrencesOfString(target, withString: withString)
+    }
+    
+    func toDictionary() -> [String:AnyObject]? {
+        if let data = self.dataUsingEncoding(NSUTF8StringEncoding) {
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [String:AnyObject]
+                return json
+            } catch {
+                print("Could not serialize \(self) to dictionary")
+            }
+        }
+        return nil
+    }
   
+}
+
+extension String : Resolveable
+{
+    public static var entityName : String? = "String"
 }
 
 public extension Character {

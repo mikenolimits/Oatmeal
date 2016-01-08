@@ -49,6 +49,5 @@ public protocol Modelable : Resolveable,NSObjectProtocol
         in real time    
      */
     func reloadModel()
-    
-    func bindsToContainer() -> Bool
+
 }

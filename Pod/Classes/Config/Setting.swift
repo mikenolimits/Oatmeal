@@ -3,14 +3,14 @@ import Foundation
 
 public class Setting : SerializebleObject{
 
-	 public let name   : String
-	 public let cached : Bool
+	 public var name   : String
+	 public var cached : Bool
 	//Can even be a Dictionary<KeyType, ValueType>
-	 public let value  : Any
+	 public var value  : Any
     /**
       namespace supports multiple plist files with name collisions
     **/
-     public let namespace : String
+    public var namespace : String
 
     init(name:String, value : AnyObject, cached: Bool = false, namespace:String = ""){
         self.name      = name
@@ -28,23 +28,15 @@ public class Setting : SerializebleObject{
         self.namespace = namespace
         super.init()
     }
-    
 
-    required public init?(coder aDecoder: NSCoder)
+    public required init()
     {
-        self.name   = ""
+        self.name = ""
         self.cached = false
-        self.value  = ""
-        self.namespace = ""
-        super.init(coder: aDecoder)
-    }
-
-    public required init() {
-        self.name   = ""
-        self.cached = false
-        self.value  = ""
-        self.namespace = ""
+        self.value = ""
+        self.namespace = "global"
         super.init()
     }
+    
 
 }

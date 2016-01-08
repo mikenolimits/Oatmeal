@@ -22,14 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print("Binding Service Providers")
         Container.App.register(providers)
-        
-        
-        if let Settings : Configuration = ~Oats(){
-            Settings.set("Settings")
-            print(Settings.get("LOG_LOCATION"))
-            print("set")
-        }
-        
+    
         // Override point for customization after application launch.
         return true
     }
