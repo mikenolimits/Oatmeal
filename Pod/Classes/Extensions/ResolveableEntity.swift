@@ -82,24 +82,30 @@ public extension Resolveable
         
         for(key,prop) in props
         {
-            if(prop.mirror.displayStyle != .Optional)
+            var isNil = false
+            
+            if(prop.mirror.displayStyle == .Optional)
             {
-                jObject =  updateJson(jObject, key: key, prop: prop)
+               if let unwrappedValue = prop.unwrappedOptional
+               {
+                 prop.value = unwrappedValue
+               }
+               else
+               {
+                 isNil = true
+               }
+            }
+            if(isNil)
+            {
+                continue
+            }
+            
+            if let serializable = prop.value as? SerializebleObject
+            {
+               jObject["object"][key] = JSON(serializable.toJSON().dictionaryValue)
             }
             else
             {
-                //Let's try to unwrap the optional if we can so our json can look right
-                let optionalMirror = Mirror(reflecting: prop.value)
-                
-                if let (_,optionalValue) = optionalMirror.children.first  where optionalMirror.children.count != 0
-                {
-                    prop.value = optionalValue
-                }
-                else
-                {
-                    continue
-                }
-                
                 jObject     =   updateJson(jObject, key: key, prop: prop)
             }
         }
@@ -127,9 +133,16 @@ public extension Resolveable
             {
                 if let name  = optionalPropertyName
                 {
+                
                     let propMirror = Mirror(reflecting: value)
                     let type       = Oats().open(value)
                     let property   = Property(mirror: propMirror, label : name,value : value, type : type)
+                    let optionalMirror = Mirror(reflecting: value)
+                    
+                    if let (_,optionalValue) = optionalMirror.children.first  where optionalMirror.children.count != 0
+                    {
+                        property.unwrappedOptional = optionalValue
+                    }
                     reflectedProperties[name] = property
                 }
             }

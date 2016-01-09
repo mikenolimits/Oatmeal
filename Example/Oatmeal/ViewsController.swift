@@ -33,10 +33,16 @@ class ViewsController: UIViewController
         self.setEvents()
         self.checkDependencies()
         
+        
+        if let config : Configuration = ~Oats(), players = config.get("GameParams.Players") as? [String:AnyObject]
+        {
+            print(players["Snake"])
+        }
+        
         if let cache : FileCache = ~Oats()
         {
             cache.get("github", completion: {
-                (response:Github) in
+                (git:Github) in
             })
         }
         
@@ -47,7 +53,7 @@ class ViewsController: UIViewController
     
     func setEvents()
     {
-        if let events : Events = ~Oats(), http: Networking = ~Oats()
+        if let events : Events = ~Oats(), http: Networking = ~Oats() where http.isConnected
         {
             print("Listening for presented...")
             events.listenFor("presented", global: true, handler: {
@@ -62,6 +68,39 @@ class ViewsController: UIViewController
     {
         http.GET("https://api.spotify.com/v1/tracks/0eGsygTp906u18L0Oimnem", completion: {
             (song : Song, success) in
+            
+            
+            if let cache : FileCache = ~Oats()
+            {
+                cache.set("song",value: song)
+                cache.get("song", completion:  {
+                    handler in
+                    
+                    if let json = handler.response
+                    {
+                        let MrBrightside = json["object"]
+                        let albumData    = json["object"]["album"]["object"].dictionaryValue
+                        print(MrBrightside)
+                        let song = Song()
+                        let album = Album()
+                        song.name = MrBrightside["name"].stringValue
+                        song.href = MrBrightside["href"].stringValue
+                        album.name = albumData["name"]?.stringValue
+                        album.href = albumData["href"]?.stringValue
+                        if let markets = albumData["available_markets"]?.arrayValue
+                        {
+                              var available_markets = [String]()
+                              for i in markets
+                              {
+                                available_markets.append(i.stringValue)
+                              }
+                              album.available_markets = available_markets
+                        }
+                        print(album)
+                    }
+                    
+                })
+            }
             print(song.name)
             print(song.album?.name)
             print(song.album?.available_markets)

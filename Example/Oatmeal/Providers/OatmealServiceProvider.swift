@@ -35,9 +35,7 @@ final class OatmealServiceProvider : ServiceProvider
     
     func registerCustomTypes() -> [Any.Type]
     {
-        return [
-            SKSpriteNode.self
-        ]
+        return [Any.Type]()
     }
 
 }

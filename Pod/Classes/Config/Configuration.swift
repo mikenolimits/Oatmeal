@@ -12,7 +12,7 @@ import Foundation
 public class Configuration : NSObject,Resolveable
 {
 
-    var cache : MemoryCache?
+    var cache : Cacheable?
     
     public static var entityName :String? = "Configuration"
 
@@ -22,7 +22,8 @@ public class Configuration : NSObject,Resolveable
     
     required public override init()
     {
-        if let cache : MemoryCache = ~Oats(){
+        if let cache : FileCache = ~Oats()
+        {
             self.cache = cache
         }
         super.init()
@@ -31,7 +32,7 @@ public class Configuration : NSObject,Resolveable
     
     public init(location:String)
     {
-        if let cache : MemoryCache = ~Oats()
+        if let cache : FileCache = ~Oats()
         {
             self.cache = cache
         }
@@ -83,9 +84,9 @@ public class Configuration : NSObject,Resolveable
     - parameter cached: Boolean indicating if the configuration should be cached to avoid later I/O
     **/
 
-    public func set(key:String, value:AnyObject, cached: Bool = false)
+    public func set(key:String, value:AnyObject, namespace : String = "", cached: Bool = false)
     {
-        let newConfig = Setting(name: key,value:value,cached:cached)
+        let newConfig = Setting(name: key,value:value,cached:cached, namespace : namespace)
         self.config.append(newConfig)
     }
     

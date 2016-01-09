@@ -269,7 +269,7 @@ class game : SerializebleObject
     var man : hangman?
     var a : [String]?
     var b : [String] = [String]()
-    var num : Int64?
+    var num : NSNumber?
     
     required init()
     {
@@ -282,7 +282,8 @@ class game : SerializebleObject
 }
 let num = NSNumber(integer: 10)
 let g = game()
-//g.setValue(num, forKeyPath: "num")
+g.setValue(num, forKeyPath: "num")
+print(g.num)
 
 let p = toProps(g)
 let aArray = p["a"]?.mirror

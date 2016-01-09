@@ -30,10 +30,15 @@ public class Reachability : Resolveable {
         
     }
     
+    public func connectedToNetwork() -> Bool
+    {
+        return Reachability.connectedToNetwork()
+    }
+    
     //Copy paste of below
     //http://stackoverflow.com/questions/25623272/how-to-use-scnetworkreachability-in-swift/25623647#25623647
     
-    public func connectedToNetwork() -> Bool {
+    class func connectedToNetwork() -> Bool {
         
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
@@ -50,13 +55,16 @@ public class Reachability : Resolveable {
             return false
         }
         
-        let isReachable = flags.contains(.Reachable)
+        let isReachable     = flags.contains(.Reachable)
         let needsConnection = flags.contains(.ConnectionRequired)
         return (isReachable && !needsConnection)
     }
     
-   
-    public func isConnected() -> Bool{
+    class func isAvailable() -> Bool{
+        return connectedToNetwork()
+    }
+    
+    public func isAvailable() -> Bool{
         return connectedToNetwork()
     }
     

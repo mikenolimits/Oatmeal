@@ -149,7 +149,7 @@ public class Serializer : NSObject,Resolveable
                         
                         let assertMirror = Mirror(reflecting: jValue)
                         
-                        if(assertMirror.displayStyle != .Optional)
+                        if(assertMirror.displayStyle != .Optional || typeAsString.containsString("NSNumber"))
                         {
                             model.setValue(jValue.numberValue, forKey: key)
                         }

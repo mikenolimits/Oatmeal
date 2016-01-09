@@ -129,7 +129,7 @@ public class Model : SerializebleObject,Modelable,Autoresolves{
         
         if let reachability : Reachability = ~Oats()
         {
-            if(reachability.isConnected())
+            if(reachability.isAvailable())
             {
                 /*
                 Async.background(after: 400.0)

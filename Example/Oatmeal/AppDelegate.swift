@@ -16,12 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
-        var providers : [ServiceProvider] = [ServiceProvider]()
-        providers.append(OatmealServiceProvider())
-        providers.append(AppServiceProvider())
-        
-        print("Binding Service Providers")
-        Container.App.register(providers)
+        Container.App.register(OatmealServiceProvider())
     
         // Override point for customization after application launch.
         return true

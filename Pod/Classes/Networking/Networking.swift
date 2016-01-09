@@ -19,6 +19,12 @@ public class Networking : NSObject,Resolveable
     
     public var done  : completion?
     public var error : completion?
+    
+    public var isConnected : Bool
+    {
+        return Reachability.isAvailable()
+    }
+    
     var manager : Alamofire.Manager
     
     public var headers : [String:String]

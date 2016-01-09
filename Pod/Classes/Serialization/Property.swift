@@ -15,6 +15,7 @@ public class Property : SerializebleObject
     public var label  : String
     public var value  : Any
     public var type   : Any.Type
+    public var unwrappedOptional : Any?
     
     init(mirror: Mirror, label : String,value : Any, type : Any.Type)
     {
